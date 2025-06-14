@@ -67,7 +67,7 @@ public class LoginView extends JFrame {
             if ("admin".equalsIgnoreCase(user.getRole())) {
                 new MainAdminView(user).setVisible(true);
             } else {
-                new MainUserView(user).setVisible(true);
+                new HomeUseView(user).setVisible(true);
             }
 
         } else {
