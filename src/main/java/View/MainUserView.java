@@ -12,7 +12,7 @@ import java.util.List;
 public class MainUserView extends JFrame {
     private JTable movieTable;
     private JTextField txtSearch;
-    private JButton btnSearch, btnBook;
+    private JButton btnSearch, btnBook, btnLogout;
     private User user;
 
     public MainUserView(User user) {
@@ -41,11 +41,13 @@ public class MainUserView extends JFrame {
         btnSearch = new JButton("Tìm kiếm");
         btnBook = new JButton("Đặt vé");
         JButton btnMyTickets = new JButton("Xem vé đã đặt");
+        btnLogout = new JButton("Đăng xuất");
 
         panelBottom.add(new JLabel("Tìm tên phim:"));
         panelBottom.add(txtSearch);
         panelBottom.add(btnSearch);
         panelBottom.add(btnBook);
+        panelBottom.add(btnLogout);
         panelBottom.add(btnMyTickets);
         
         panelMain.add(panelBottom, BorderLayout.SOUTH);
@@ -65,9 +67,19 @@ public class MainUserView extends JFrame {
             }
         });
         
+        
         btnMyTickets.addActionListener(e -> {
             new UserTicketsView(user.getId()).setVisible(true);
         });
+        
+        btnLogout.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                dispose();
+                new LoginView().setVisible(true);
+            }
+        });
+
     }
 
     private void loadMovieData() {

@@ -1,4 +1,5 @@
 util\MyConnection.class
+View\TicketManagementView.class
 Dao\MovieDao.class
 Model\Movie.class
 Model\Ticket.class
@@ -6,11 +7,13 @@ View\MainAdminView.class
 View\UserManagementView.class
 Dao\TicketDao.class
 Model\User.class
-Controller\AuthController.class
 View\LoginView.class
 View\UserTicketsView.class
+Dao\ShowtimeDao.class
 Dao\UserDao.class
+Model\Showtime.class
 Main\Main.class
 View\ShowtimeBookingView.class
 View\MainUserView.class
 util\HashUtil.class
+View\ShowtimeManagementView.class

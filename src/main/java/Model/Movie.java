@@ -47,4 +47,9 @@ public class Movie {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+    
+    @Override
+public String toString() {
+    return title; // hoặc bất kỳ field nào bạn muốn hiển thị
+}
 }

@@ -1,6 +1,6 @@
 package View;
 
-import Controller.AuthController;
+import Dao.UserDao;
 import Model.User;
 
 import javax.swing.*;
@@ -28,6 +28,13 @@ public class LoginView extends JFrame {
         txtPassword = new JPasswordField();
         btnLogin = new JButton("Đăng nhập");
 
+        // Ấn Enter ở txtUsername → chuyển xuống txtPassword
+        txtUsername.addActionListener(e -> txtPassword.requestFocusInWindow());
+
+        // Ấn Enter ở txtPassword → tự động đăng nhập
+        txtPassword.addActionListener(e -> handleLogin());
+
+        // Ấn nút → cũng đăng nhập
         btnLogin.addActionListener(e -> handleLogin());
 
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -35,7 +42,7 @@ public class LoginView extends JFrame {
         panel.add(txtUsername);
         panel.add(lblPassword);
         panel.add(txtPassword);
-        panel.add(new JLabel());
+        panel.add(new JLabel()); // khoảng trắng
         panel.add(btnLogin);
 
         add(panel);
@@ -50,17 +57,17 @@ public class LoginView extends JFrame {
             return;
         }
 
-        AuthController auth = new AuthController();
-        User user = auth.login(username, password);
+        UserDao userDao = new UserDao();
+        User user = userDao.checkLogin(username, password);
 
         if (user != null) {
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
             dispose(); // đóng cửa sổ đăng nhập
 
-            if (user.getRole().equalsIgnoreCase("admin")) {
+            if ("admin".equalsIgnoreCase(user.getRole())) {
                 new MainAdminView(user).setVisible(true);
             } else {
-                new MainUserView(user).setVisible(true); // giả định bạn có giao diện người dùng thường
+                new MainUserView(user).setVisible(true);
             }
 
         } else {

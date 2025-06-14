@@ -13,7 +13,7 @@ import java.util.List;
 public class MainAdminView extends JFrame {
     private JTable movieTable;
     private JTextField txtSearch;
-    private JButton btnAdd, btnEdit, btnDelete, btnSearch, btnRefresh;
+    private JButton btnAdd, btnEdit, btnDelete, btnSearch, btnRefresh, btnLogout;
     private JMenuBar menuBar;
     private JMenu menuManage;
     private JMenuItem menuShowtimes, menuTickets, menuUsers, menuReports;
@@ -37,7 +37,7 @@ public class MainAdminView extends JFrame {
         menuTickets = new JMenuItem("Quản lý vé");
         menuUsers = new JMenuItem("Quản lý người dùng");
         menuReports = new JMenuItem("Báo cáo doanh thu");
-
+       
         menuManage.add(menuShowtimes);
         menuManage.add(menuTickets);
         menuManage.add(menuUsers);
@@ -47,10 +47,11 @@ public class MainAdminView extends JFrame {
         setJMenuBar(menuBar);
 
         // Mỗi chức năng hiển thị thông báo (sẽ thay bằng giao diện thực sau)
-        menuShowtimes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Chuyển đến Quản lý lịch chiếu"));
-        menuTickets.addActionListener(e -> JOptionPane.showMessageDialog(this, "Chuyển đến Quản lý vé"));
+        menuShowtimes.addActionListener(e -> new ShowtimeManagementView().setVisible(true));
+        menuTickets.addActionListener(e -> new TicketManagementView().setVisible(true));
 //        menuUsers.addActionListener(e -> JOptionPane.showMessageDialog(this, "Chuyển đến Quản lý người dùng"));
         menuReports.addActionListener(e -> JOptionPane.showMessageDialog(this, "Chuyển đến Báo cáo doanh thu"));
+        
     }
 
     private void initComponents() {
@@ -73,6 +74,7 @@ public class MainAdminView extends JFrame {
         btnEdit = new JButton("Sửa");
         btnDelete = new JButton("Xóa");
         btnRefresh = new JButton("Làm mới");
+        btnLogout = new JButton("Đăng xuất");
 
         panelActions.add(new JLabel("Tìm tên phim:"));
         panelActions.add(txtSearch);
@@ -81,6 +83,7 @@ public class MainAdminView extends JFrame {
         panelActions.add(btnEdit);
         panelActions.add(btnDelete);
         panelActions.add(btnRefresh);
+        panelActions.add(btnLogout);
 
         panelMain.add(panelActions, BorderLayout.SOUTH);
         setContentPane(panelMain);
@@ -122,6 +125,8 @@ public class MainAdminView extends JFrame {
                 }
             }
         });
+                
+                
 
         btnEdit.addActionListener(e -> {
             int selectedRow = movieTable.getSelectedRow();
@@ -181,6 +186,16 @@ public class MainAdminView extends JFrame {
         });
 
         menuUsers.addActionListener(e -> new UserManagementView().setVisible(true));
+        
+        btnLogout.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                dispose();
+                new LoginView().setVisible(true);
+            }
+        });
+
+   
     }
     
     
