@@ -1,7 +1,7 @@
 package Dao;
 
 import Model.User;
-import util.HashUtil;
+import util.Bcrypt;
 import util.MyConnection;
 
 import java.sql.*;

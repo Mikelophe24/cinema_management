@@ -1,106 +1,116 @@
 package View;
 
-import Dao.MovieDao;
-import Model.Movie;
-import Model.User;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import Dao.MovieDao;
+import Model.Account;
+import Model.Movie;
+
 public class MainUserView extends JFrame {
-    private JTable movieTable;
-    private JTextField txtSearch;
-    private JButton btnSearch, btnBook, btnLogout;
-    private User user;
+	private static final long serialVersionUID = -8612786092250355724L;
+	private JTable movieTable;
+	private JTextField txtSearch;
+	private JButton btnSearch, btnBooking, btnLogout;
+	private Account currentAccount;
 
-    public MainUserView(User user) {
-         this.user = user;
-        setTitle("Rạp chiếu phim - Xin chào " + user.getUsername());
-        setSize(800, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+	public MainUserView(Account account) {
+		this.currentAccount = account;
+		setTitle("Rạp chiếu phim - Xin chào " + account.getUsername());
+		setSize(800, 500);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        initComponents();
-        loadMovieData();
-    }
+		initComponents();
+		loadMovieData();
+	}
 
-    private void initComponents() {
-        JPanel panelMain = new JPanel(new BorderLayout());
-        
-        JLabel lblTitle = new JLabel("Danh sách phim đang chiếu", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 22));
-        panelMain.add(lblTitle, BorderLayout.NORTH);
+	private void initComponents() {
+		JPanel panelMain = new JPanel(new BorderLayout());
 
-        movieTable = new JTable();
-        panelMain.add(new JScrollPane(movieTable), BorderLayout.CENTER);
+		JLabel lblTitle = new JLabel("Danh sách phim đang chiếu", SwingConstants.CENTER);
+		lblTitle.setFont(new Font("Arial", Font.BOLD, 22));
+		panelMain.add(lblTitle, BorderLayout.NORTH);
 
-        JPanel panelBottom = new JPanel();
-        txtSearch = new JTextField(20);
-        btnSearch = new JButton("Tìm kiếm");
-        btnBook = new JButton("Đặt vé");
-        JButton btnMyTickets = new JButton("Xem vé đã đặt");
-        btnLogout = new JButton("Đăng xuất");
+		movieTable = new JTable();
+		panelMain.add(new JScrollPane(movieTable), BorderLayout.CENTER);
 
-        panelBottom.add(new JLabel("Tìm tên phim:"));
-        panelBottom.add(txtSearch);
-        panelBottom.add(btnSearch);
-        panelBottom.add(btnBook);
-        panelBottom.add(btnLogout);
-        panelBottom.add(btnMyTickets);
-        
-        panelMain.add(panelBottom, BorderLayout.SOUTH);
-        setContentPane(panelMain);
+		JPanel panelBottom = new JPanel();
+		txtSearch = new JTextField(20);
+		btnSearch = new JButton("Tìm kiếm");
+		btnBooking = new JButton("Đặt vé");
+		JButton btnMyTickets = new JButton("Xem vé đã đặt");
+		btnLogout = new JButton("Đăng xuất");
 
-        btnSearch.addActionListener(e -> loadMovieData(txtSearch.getText().trim()));
+		panelBottom.add(new JLabel("Tìm tên phim:"));
+		panelBottom.add(txtSearch);
+		panelBottom.add(btnSearch);
+		panelBottom.add(btnBooking);
+		panelBottom.add(btnLogout);
+		panelBottom.add(btnMyTickets);
 
-        btnBook.addActionListener(e -> {
-            int row = movieTable.getSelectedRow();
-            if (row >= 0) {
-                int movieId = Integer.parseInt(movieTable.getValueAt(row, 0).toString());
-                String movieTitle = movieTable.getValueAt(row, 1).toString();
-                new ShowtimeBookingView(user, movieId, movieTitle).setVisible(true);
-                // Tương lai: mở form chọn lịch chiếu + ghế
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn một bộ phim để đặt vé.");
-            }
-        });
-        
-        
-        btnMyTickets.addActionListener(e -> {
-            new UserTicketsView(user.getId()).setVisible(true);
-        });
-        
-        btnLogout.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                dispose();
-                new LoginView().setVisible(true);
-            }
-        });
+		panelMain.add(panelBottom, BorderLayout.SOUTH);
+		setContentPane(panelMain);
 
-    }
+		btnSearch.addActionListener(e -> loadMovieData(txtSearch.getText().trim()));
 
-    private void loadMovieData() {
-        loadMovieData("");
-    }
+		btnBooking.addActionListener(e -> {
+			int row = movieTable.getSelectedRow();
+			if (row >= 0) {
+				int movieId = Integer.parseInt(movieTable.getValueAt(row, 0).toString());
+				String movieTitle = movieTable.getValueAt(row, 1).toString();
+//				new ShowtimeBookingView(account, movieId, movieTitle).setVisible(true);
+			} else {
+				JOptionPane.showMessageDialog(this, "Vui lòng chọn một bộ phim để đặt vé.");
+			}
+		});
 
-    private void loadMovieData(String keyword) {
-        MovieDao dao = new MovieDao();
-        List<Movie> movies = dao.getMoviesByKeyword(keyword);
+		btnMyTickets.addActionListener(e -> {
+//			new UserTicketsView(account.getId()).setVisible(true);
+		});
 
-        String[] columns = {"ID", "Tên phim", "Thể loại", "Thời lượng"};
-        String[][] data = new String[movies.size()][4];
+		btnLogout.addActionListener(e -> {
+			int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận",
+					JOptionPane.YES_NO_OPTION);
+			if (confirm == JOptionPane.YES_OPTION) {
+				dispose();
+				new LoginView().setVisible(true);
+			}
+		});
 
-        for (int i = 0; i < movies.size(); i++) {
-            Movie m = movies.get(i);
-            data[i][0] = String.valueOf(m.getId());
-            data[i][1] = m.getTitle();
-            data[i][2] = m.getGenre();
-            data[i][3] = m.getDuration() + " phút";
-        }
+	}
 
-        movieTable.setModel(new DefaultTableModel(data, columns));
-    }
+	private void loadMovieData() {
+		loadMovieData("");
+	}
+
+	private void loadMovieData(String keyword) {
+		MovieDao dao = new MovieDao();
+		List<Movie> movies = dao.getMoviesByKeyword(keyword);
+
+		String[] columns = { "STT", "Tên phim", "Thể loại", "Thời lượng" };
+		String[][] data = new String[movies.size()][4];
+
+		for (int i = 0; i < movies.size(); i++) {
+			Movie m = movies.get(i);
+			data[i][0] = String.valueOf(i);
+			data[i][1] = m.getTitle();
+			data[i][2] = m.getGenre();
+			data[i][3] = m.getDuration() + " phút";
+		}
+
+		movieTable.setModel(new DefaultTableModel(data, columns));
+	}
 }

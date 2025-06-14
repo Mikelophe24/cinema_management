@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 14, 2025 lúc 09:10 AM
+-- Thời gian đã tạo: Th6 14, 2025 lúc 01:08 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -24,27 +24,36 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `account`
+-- Cấu trúc bảng cho bảng `accounts`
 --
 
-CREATE TABLE `account` (
-  `account_id` varchar(50) NOT NULL,
+CREATE TABLE `accounts` (
+  `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `account_type` varchar(20) NOT NULL,
-  `created_date` date NOT NULL,
+  `type` enum('admin','customer','employee','') NOT NULL DEFAULT 'customer',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status` varchar(20) NOT NULL,
   `display_name` varchar(100) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `accounts`
+--
+
+INSERT INTO `accounts` (`id`, `username`, `password`, `type`, `created_at`, `updated_at`, `status`, `display_name`, `avatar`) VALUES
+(1, 'KAdmin', '$2a$10$E1h4RjTnttZS037MaenjHujYvdwu3vSiKI/kl6yjt34.XY7h5EBEa', 'admin', '2025-06-14 09:50:16', '2025-06-14 09:50:16', 'active', 'Quản trị viên K', 'https://www.google.com/imgres?q=%E1%BA%A3nh%20%C4%91%E1%BA%B9p%20anime%204k&imgurl=https%3A%2F%2Fcellphones.com.vn%2Fsforum%2Fwp-content%2Fuploads%2F2024%2F01%2Fhinh-nen-anime-9.jpg&imgrefurl=https%3A%2F%2Fcellphones.com.vn%2Fsforum%2Fhinh-nen-anime&docid'),
+(2, 'KUser', '$2a$10$3LDiVELo0zYFI2myO9OmJuEyhY8gRpAuDEv4mpRPXJ269bo5SGLlm', 'customer', '2025-06-14 10:45:09', '2025-06-14 10:45:09', 'active', 'Khách hàng 1', 'https://www.google.com/imgres?q=%E1%BA%A3nh%20anime%204k&imgurl=https%3A%2F%2Finkythuatso.com%2Fuploads%2Fimages%2F2022%2F03%2Fanh-kirito-4k-4-16-09-22-06.jpg&imgrefurl=https%3A%2F%2Finkythuatso.com%2Fhinh-anh-dep%2Fanh-kirito-4k-3624.html&docid=4kQCCaDHU');
+
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `bank_account`
+-- Cấu trúc bảng cho bảng `bank_accounts`
 --
 
-CREATE TABLE `bank_account` (
+CREATE TABLE `bank_accounts` (
   `account_number` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `bank_name` varchar(100) NOT NULL,
@@ -56,12 +65,12 @@ CREATE TABLE `bank_account` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `customer`
+-- Cấu trúc bảng cho bảng `customers`
 --
 
-CREATE TABLE `customer` (
-  `customer_id` varchar(50) NOT NULL,
-  `account_id` varchar(50) DEFAULT NULL,
+CREATE TABLE `customers` (
+  `id` int(11) NOT NULL,
+  `account_id` int(11) DEFAULT NULL,
   `full_name` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `phone_number` varchar(20) DEFAULT NULL
@@ -70,23 +79,23 @@ CREATE TABLE `customer` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `customer_vote`
+-- Cấu trúc bảng cho bảng `customer_votes`
 --
 
-CREATE TABLE `customer_vote` (
-  `account_id` varchar(50) NOT NULL,
-  `movie_id` varchar(50) NOT NULL,
+CREATE TABLE `customer_votes` (
+  `account_id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
   `vote` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `employee`
+-- Cấu trúc bảng cho bảng `employees`
 --
 
-CREATE TABLE `employee` (
-  `employee_id` varchar(50) NOT NULL,
+CREATE TABLE `employees` (
+  `id` int(11) NOT NULL,
   `full_name` varchar(100) NOT NULL,
   `birth_date` date NOT NULL,
   `address` varchar(255) NOT NULL,
@@ -94,18 +103,18 @@ CREATE TABLE `employee` (
   `email` varchar(100) NOT NULL,
   `phone_number` varchar(20) NOT NULL,
   `hire_date` date NOT NULL,
-  `account_id` varchar(50) DEFAULT NULL
+  `account_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `feedback`
+-- Cấu trúc bảng cho bảng `feedbacks`
 --
 
-CREATE TABLE `feedback` (
-  `feedback_id` varchar(50) NOT NULL,
-  `account_id` varchar(50) NOT NULL,
+CREATE TABLE `feedbacks` (
+  `id` int(11) NOT NULL,
+  `account_id` int(11) NOT NULL,
   `content` text NOT NULL,
   `feedback_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -113,11 +122,11 @@ CREATE TABLE `feedback` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `genre`
+-- Cấu trúc bảng cho bảng `genres`
 --
 
-CREATE TABLE `genre` (
-  `genre_id` varchar(20) NOT NULL,
+CREATE TABLE `genres` (
+  `id` int(11) NOT NULL,
   `genre_name` varchar(50) NOT NULL,
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -125,13 +134,13 @@ CREATE TABLE `genre` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `invoice`
+-- Cấu trúc bảng cho bảng `invoices`
 --
 
-CREATE TABLE `invoice` (
+CREATE TABLE `invoices` (
   `invoice_id` int(11) NOT NULL,
-  `account_id` varchar(50) NOT NULL,
-  `schedule_id` varchar(50) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
+  `schedule_id` int(11) DEFAULT NULL,
   `total_amount` decimal(10,2) NOT NULL,
   `booking_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -139,11 +148,11 @@ CREATE TABLE `invoice` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `movie`
+-- Cấu trúc bảng cho bảng `movies`
 --
 
-CREATE TABLE `movie` (
-  `movie_id` varchar(50) NOT NULL,
+CREATE TABLE `movies` (
+  `id` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,
   `country` varchar(50) NOT NULL,
   `release_year` int(11) NOT NULL,
@@ -158,24 +167,24 @@ CREATE TABLE `movie` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `movie_genre`
+-- Cấu trúc bảng cho bảng `movie_genres`
 --
 
-CREATE TABLE `movie_genre` (
-  `movie_id` varchar(50) NOT NULL,
-  `genre_id` varchar(20) NOT NULL
+CREATE TABLE `movie_genres` (
+  `movie_id` int(11) NOT NULL,
+  `genre_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `movie_schedule`
+-- Cấu trúc bảng cho bảng `movie_schedules`
 --
 
-CREATE TABLE `movie_schedule` (
-  `schedule_id` varchar(50) NOT NULL,
-  `theater_id` varchar(20) NOT NULL,
-  `movie_id` varchar(50) NOT NULL,
+CREATE TABLE `movie_schedules` (
+  `id` int(11) NOT NULL,
+  `theater_id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
   `show_date` date NOT NULL,
   `start_time` time NOT NULL,
   `duration` int(11) NOT NULL,
@@ -186,24 +195,24 @@ CREATE TABLE `movie_schedule` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `order_detail`
+-- Cấu trúc bảng cho bảng `order_details`
 --
 
-CREATE TABLE `order_detail` (
+CREATE TABLE `order_details` (
   `invoice_id` int(11) NOT NULL,
-  `product_id` varchar(50) NOT NULL,
+  `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `product`
+-- Cấu trúc bảng cho bảng `products`
 --
 
-CREATE TABLE `product` (
-  `product_id` varchar(50) NOT NULL,
-  `supplier_id` varchar(50) NOT NULL,
+CREATE TABLE `products` (
+  `id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
   `product_name` varchar(100) NOT NULL,
   `price` int(11) NOT NULL,
   `description` text DEFAULT NULL,
@@ -214,23 +223,23 @@ CREATE TABLE `product` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `seat`
+-- Cấu trúc bảng cho bảng `seats`
 --
 
-CREATE TABLE `seat` (
+CREATE TABLE `seats` (
   `seat_id` int(11) NOT NULL,
-  `theater_id` varchar(20) NOT NULL
+  `theater_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `seat_schedule`
+-- Cấu trúc bảng cho bảng `seat_schedules`
 --
 
-CREATE TABLE `seat_schedule` (
+CREATE TABLE `seat_schedules` (
   `seat_id` int(11) NOT NULL,
-  `schedule_id` varchar(50) NOT NULL,
+  `schedule_id` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   `ticket_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -238,11 +247,11 @@ CREATE TABLE `seat_schedule` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `supplier`
+-- Cấu trúc bảng cho bảng `suppliers`
 --
 
-CREATE TABLE `supplier` (
-  `supplier_id` varchar(50) NOT NULL,
+CREATE TABLE `suppliers` (
+  `id` int(11) NOT NULL,
   `supplier_name` varchar(100) NOT NULL,
   `address` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -252,11 +261,11 @@ CREATE TABLE `supplier` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `theater`
+-- Cấu trúc bảng cho bảng `theaters`
 --
 
-CREATE TABLE `theater` (
-  `theater_id` varchar(20) NOT NULL,
+CREATE TABLE `theaters` (
+  `id` int(11) NOT NULL,
   `theater_name` varchar(100) NOT NULL,
   `status` varchar(20) NOT NULL,
   `capacity` int(11) NOT NULL,
@@ -268,13 +277,13 @@ CREATE TABLE `theater` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `ticket`
+-- Cấu trúc bảng cho bảng `tickets`
 --
 
-CREATE TABLE `ticket` (
+CREATE TABLE `tickets` (
   `ticket_id` int(11) NOT NULL,
-  `account_id` varchar(50) NOT NULL,
-  `schedule_id` varchar(50) NOT NULL,
+  `account_id` int(11) NOT NULL,
+  `schedule_id` int(11) NOT NULL,
   `seat_count` int(11) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
   `booking_date` date NOT NULL,
@@ -284,11 +293,11 @@ CREATE TABLE `ticket` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `ticket_detail`
+-- Cấu trúc bảng cho bảng `ticket_details`
 --
 
-CREATE TABLE `ticket_detail` (
-  `detail_id` varchar(50) NOT NULL,
+CREATE TABLE `ticket_details` (
+  `id` int(11) NOT NULL,
   `ticket_id` int(11) NOT NULL,
   `seat_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -298,135 +307,135 @@ CREATE TABLE `ticket_detail` (
 --
 
 --
--- Chỉ mục cho bảng `account`
+-- Chỉ mục cho bảng `accounts`
 --
-ALTER TABLE `account`
-  ADD PRIMARY KEY (`account_id`),
-  ADD UNIQUE KEY `username` (`username`);
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username_unique` (`username`);
 
 --
--- Chỉ mục cho bảng `bank_account`
+-- Chỉ mục cho bảng `bank_accounts`
 --
-ALTER TABLE `bank_account`
+ALTER TABLE `bank_accounts`
   ADD PRIMARY KEY (`account_number`);
 
 --
--- Chỉ mục cho bảng `customer`
+-- Chỉ mục cho bảng `customers`
 --
-ALTER TABLE `customer`
-  ADD PRIMARY KEY (`customer_id`),
+ALTER TABLE `customers`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `account_id` (`account_id`);
 
 --
--- Chỉ mục cho bảng `customer_vote`
+-- Chỉ mục cho bảng `customer_votes`
 --
-ALTER TABLE `customer_vote`
+ALTER TABLE `customer_votes`
   ADD PRIMARY KEY (`account_id`,`movie_id`),
   ADD KEY `movie_id` (`movie_id`);
 
 --
--- Chỉ mục cho bảng `employee`
+-- Chỉ mục cho bảng `employees`
 --
-ALTER TABLE `employee`
-  ADD PRIMARY KEY (`employee_id`),
+ALTER TABLE `employees`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `account_id` (`account_id`);
 
 --
--- Chỉ mục cho bảng `feedback`
+-- Chỉ mục cho bảng `feedbacks`
 --
-ALTER TABLE `feedback`
-  ADD PRIMARY KEY (`feedback_id`),
+ALTER TABLE `feedbacks`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `account_id` (`account_id`);
 
 --
--- Chỉ mục cho bảng `genre`
+-- Chỉ mục cho bảng `genres`
 --
-ALTER TABLE `genre`
-  ADD PRIMARY KEY (`genre_id`);
+ALTER TABLE `genres`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `invoice`
+-- Chỉ mục cho bảng `invoices`
 --
-ALTER TABLE `invoice`
+ALTER TABLE `invoices`
   ADD PRIMARY KEY (`invoice_id`),
-  ADD KEY `schedule_id` (`schedule_id`),
-  ADD KEY `idx_invoice_account` (`account_id`);
+  ADD KEY `account_id` (`account_id`),
+  ADD KEY `schedule_id` (`schedule_id`);
 
 --
--- Chỉ mục cho bảng `movie`
+-- Chỉ mục cho bảng `movies`
 --
-ALTER TABLE `movie`
-  ADD PRIMARY KEY (`movie_id`);
+ALTER TABLE `movies`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `movie_genre`
+-- Chỉ mục cho bảng `movie_genres`
 --
-ALTER TABLE `movie_genre`
+ALTER TABLE `movie_genres`
   ADD PRIMARY KEY (`movie_id`,`genre_id`),
   ADD KEY `genre_id` (`genre_id`);
 
 --
--- Chỉ mục cho bảng `movie_schedule`
+-- Chỉ mục cho bảng `movie_schedules`
 --
-ALTER TABLE `movie_schedule`
-  ADD PRIMARY KEY (`schedule_id`),
+ALTER TABLE `movie_schedules`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `theater_id` (`theater_id`),
   ADD KEY `movie_id` (`movie_id`);
 
 --
--- Chỉ mục cho bảng `order_detail`
+-- Chỉ mục cho bảng `order_details`
 --
-ALTER TABLE `order_detail`
+ALTER TABLE `order_details`
   ADD PRIMARY KEY (`invoice_id`,`product_id`),
   ADD KEY `product_id` (`product_id`);
 
 --
--- Chỉ mục cho bảng `product`
+-- Chỉ mục cho bảng `products`
 --
-ALTER TABLE `product`
-  ADD PRIMARY KEY (`product_id`,`supplier_id`),
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`,`supplier_id`),
   ADD KEY `supplier_id` (`supplier_id`);
 
 --
--- Chỉ mục cho bảng `seat`
+-- Chỉ mục cho bảng `seats`
 --
-ALTER TABLE `seat`
+ALTER TABLE `seats`
   ADD PRIMARY KEY (`seat_id`),
-  ADD KEY `idx_seat_theater` (`theater_id`);
+  ADD KEY `theater_id` (`theater_id`);
 
 --
--- Chỉ mục cho bảng `seat_schedule`
+-- Chỉ mục cho bảng `seat_schedules`
 --
-ALTER TABLE `seat_schedule`
+ALTER TABLE `seat_schedules`
   ADD PRIMARY KEY (`seat_id`,`schedule_id`),
   ADD KEY `schedule_id` (`schedule_id`),
   ADD KEY `ticket_id` (`ticket_id`);
 
 --
--- Chỉ mục cho bảng `supplier`
+-- Chỉ mục cho bảng `suppliers`
 --
-ALTER TABLE `supplier`
-  ADD PRIMARY KEY (`supplier_id`);
+ALTER TABLE `suppliers`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `theater`
+-- Chỉ mục cho bảng `theaters`
 --
-ALTER TABLE `theater`
-  ADD PRIMARY KEY (`theater_id`);
+ALTER TABLE `theaters`
+  ADD PRIMARY KEY (`id`);
 
 --
--- Chỉ mục cho bảng `ticket`
+-- Chỉ mục cho bảng `tickets`
 --
-ALTER TABLE `ticket`
+ALTER TABLE `tickets`
   ADD PRIMARY KEY (`ticket_id`),
   ADD KEY `account_id` (`account_id`),
-  ADD KEY `idx_ticket_schedule` (`schedule_id`);
+  ADD KEY `schedule_id` (`schedule_id`);
 
 --
--- Chỉ mục cho bảng `ticket_detail`
+-- Chỉ mục cho bảng `ticket_details`
 --
-ALTER TABLE `ticket_detail`
-  ADD PRIMARY KEY (`detail_id`),
+ALTER TABLE `ticket_details`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `ticket_id` (`ticket_id`),
   ADD KEY `seat_id` (`seat_id`);
 
@@ -435,113 +444,179 @@ ALTER TABLE `ticket_detail`
 --
 
 --
--- AUTO_INCREMENT cho bảng `invoice`
+-- AUTO_INCREMENT cho bảng `accounts`
 --
-ALTER TABLE `invoice`
+ALTER TABLE `accounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT cho bảng `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `employees`
+--
+ALTER TABLE `employees`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `genres`
+--
+ALTER TABLE `genres`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `invoices`
+--
+ALTER TABLE `invoices`
   MODIFY `invoice_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `seat`
+-- AUTO_INCREMENT cho bảng `movies`
 --
-ALTER TABLE `seat`
+ALTER TABLE `movies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `movie_schedules`
+--
+ALTER TABLE `movie_schedules`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `seats`
+--
+ALTER TABLE `seats`
   MODIFY `seat_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `ticket`
+-- AUTO_INCREMENT cho bảng `suppliers`
 --
-ALTER TABLE `ticket`
+ALTER TABLE `suppliers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `theaters`
+--
+ALTER TABLE `theaters`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `tickets`
+--
+ALTER TABLE `tickets`
   MODIFY `ticket_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `ticket_details`
+--
+ALTER TABLE `ticket_details`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Các ràng buộc cho bảng `customer`
+-- Các ràng buộc cho bảng `customers`
 --
-ALTER TABLE `customer`
-  ADD CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `customers`
+  ADD CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `customer_vote`
+-- Các ràng buộc cho bảng `customer_votes`
 --
-ALTER TABLE `customer_vote`
-  ADD CONSTRAINT `customer_vote_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `customer_vote_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `customer_votes`
+  ADD CONSTRAINT `customer_votes_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `customer_votes_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `employee`
+-- Các ràng buộc cho bảng `employees`
 --
-ALTER TABLE `employee`
-  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `employees`
+  ADD CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `feedback`
+-- Các ràng buộc cho bảng `feedbacks`
 --
-ALTER TABLE `feedback`
-  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `feedbacks`
+  ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `invoice`
+-- Các ràng buộc cho bảng `invoices`
 --
-ALTER TABLE `invoice`
-  ADD CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `movie_schedule` (`schedule_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `invoices`
+  ADD CONSTRAINT `invoices_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `invoices_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `movie_schedules` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `movie_genre`
+-- Các ràng buộc cho bảng `movie_genres`
 --
-ALTER TABLE `movie_genre`
-  ADD CONSTRAINT `movie_genre_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `movie_genre_ibfk_2` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`genre_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `movie_genres`
+  ADD CONSTRAINT `movie_genres_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `movie_genres_ibfk_2` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `movie_schedule`
+-- Các ràng buộc cho bảng `movie_schedules`
 --
-ALTER TABLE `movie_schedule`
-  ADD CONSTRAINT `movie_schedule_ibfk_1` FOREIGN KEY (`theater_id`) REFERENCES `theater` (`theater_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `movie_schedule_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `movie_schedules`
+  ADD CONSTRAINT `movie_schedules_ibfk_1` FOREIGN KEY (`theater_id`) REFERENCES `theaters` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `movie_schedules_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `order_detail`
+-- Các ràng buộc cho bảng `order_details`
 --
-ALTER TABLE `order_detail`
-  ADD CONSTRAINT `order_detail_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoice` (`invoice_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `order_detail_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `order_details`
+  ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`invoice_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `product`
+-- Các ràng buộc cho bảng `products`
 --
-ALTER TABLE `product`
-  ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`supplier_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `products`
+  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `seat`
+-- Các ràng buộc cho bảng `seats`
 --
-ALTER TABLE `seat`
-  ADD CONSTRAINT `seat_ibfk_1` FOREIGN KEY (`theater_id`) REFERENCES `theater` (`theater_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `seats`
+  ADD CONSTRAINT `seats_ibfk_1` FOREIGN KEY (`theater_id`) REFERENCES `theaters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `seat_schedule`
+-- Các ràng buộc cho bảng `seat_schedules`
 --
-ALTER TABLE `seat_schedule`
-  ADD CONSTRAINT `seat_schedule_ibfk_1` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`seat_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `seat_schedule_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `movie_schedule` (`schedule_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `seat_schedule_ibfk_3` FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`ticket_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `seat_schedules`
+  ADD CONSTRAINT `seat_schedules_ibfk_1` FOREIGN KEY (`seat_id`) REFERENCES `seats` (`seat_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `seat_schedules_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `movie_schedules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `seat_schedules_ibfk_3` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`ticket_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `ticket`
+-- Các ràng buộc cho bảng `tickets`
 --
-ALTER TABLE `ticket`
-  ADD CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `movie_schedule` (`schedule_id`) ON UPDATE CASCADE;
+ALTER TABLE `tickets`
+  ADD CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tickets_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `movie_schedules` (`id`) ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `ticket_detail`
+-- Các ràng buộc cho bảng `ticket_details`
 --
-ALTER TABLE `ticket_detail`
-  ADD CONSTRAINT `ticket_detail_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`ticket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ticket_detail_ibfk_2` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`seat_id`) ON UPDATE CASCADE;
+ALTER TABLE `ticket_details`
+  ADD CONSTRAINT `ticket_details_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`ticket_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ticket_details_ibfk_2` FOREIGN KEY (`seat_id`) REFERENCES `seats` (`seat_id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
