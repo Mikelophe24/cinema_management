@@ -7,7 +7,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class RegisterUseView extends JFrame {
-    private JTextField txtDisplayName;
+    private JTextField txtFullName;
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private JPasswordField txtConfirmPassword;
@@ -61,7 +61,7 @@ public class RegisterUseView extends JFrame {
         mainPanel.add(lblTitle);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        mainPanel.add(createInputPanel("Tên hiển thị:", txtDisplayName = new JTextField()));
+        mainPanel.add(createInputPanel("Họ và Tên:", txtFullName = new JTextField()));
         mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
         mainPanel.add(createInputPanel("Tên đăng nhập:", txtUsername = new JTextField()));
@@ -278,7 +278,7 @@ public class RegisterUseView extends JFrame {
         }
 
         // Validate all text fields for emptiness
-        JTextField[] fields = {txtDisplayName, txtUsername};
+        JTextField[] fields = {txtFullName, txtUsername};
         for (JTextField field : fields) {
             if (field.getText().trim().isEmpty()) {
                 errorLabels.get(field).setText("Chưa nhập thông tin này!");
