@@ -11,7 +11,6 @@ public class RegisterUseView extends JFrame {
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private JPasswordField txtConfirmPassword;
-    private JTextField txtFullName;
     private JTextField txtEmail;
     private JTextField txtPhoneNumber;
     private JButton btnRegister;
@@ -131,6 +130,8 @@ public class RegisterUseView extends JFrame {
                     validateConfirmPassword();
                 } else if (textField == txtEmail) {
                     validateEmailFormat(txtEmail);
+                } else if (textField == txtPhoneNumber) {
+                    validatePhoneNumberFormat(txtPhoneNumber);
                 } else {
                     if (textField.getText().trim().isEmpty()) {
                         errorLabel.setText("Chưa nhập thông tin này!");
@@ -242,6 +243,30 @@ public class RegisterUseView extends JFrame {
         return isValid;
     }
 
+    // New method for phone number format validation
+    private boolean validatePhoneNumberFormat(JTextField phoneField) {
+        JLabel errorLabel = errorLabels.get(phoneField);
+        String phoneNumber = phoneField.getText().trim();
+        // Regex: starts with 0, 9 to 11 digits total
+        String phoneRegex = "^0\\d{8,10}$";
+        boolean isValid = true;
+
+        if (phoneNumber.isEmpty()) {
+            errorLabel.setText("Chưa nhập thông tin này!");
+            errorLabel.setVisible(true);
+            phoneField.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+            isValid = false;
+        } else if (!phoneNumber.matches(phoneRegex)) {
+            errorLabel.setText("SĐT phải bắt đầu bằng 0 và có 9-11 chữ số.");
+            errorLabel.setVisible(true);
+            phoneField.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+            isValid = false;
+        } else {
+            errorLabel.setVisible(false);
+            phoneField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR, 1));
+        }
+        return isValid;
+    }
 
     private void handleRegister() {
         boolean allValid = true;
@@ -253,7 +278,7 @@ public class RegisterUseView extends JFrame {
         }
 
         // Validate all text fields for emptiness
-        JTextField[] fields = {txtDisplayName, txtUsername, txtFullName, txtPhoneNumber};
+        JTextField[] fields = {txtDisplayName, txtUsername};
         for (JTextField field : fields) {
             if (field.getText().trim().isEmpty()) {
                 errorLabels.get(field).setText("Chưa nhập thông tin này!");
@@ -266,16 +291,17 @@ public class RegisterUseView extends JFrame {
         // Validate password strictness and confirm password
         boolean passwordValid = validatePasswordStrictness(txtPassword);
         boolean confirmPasswordValid = validateConfirmPassword();
-        boolean emailValid = validateEmailFormat(txtEmail); // Validate email
+        boolean emailValid = validateEmailFormat(txtEmail);
+        boolean phoneNumberValid = validatePhoneNumberFormat(txtPhoneNumber); // Validate phone number
 
-        if (!passwordValid || !confirmPasswordValid || !emailValid) {
+        if (!passwordValid || !confirmPasswordValid || !emailValid || !phoneNumberValid) {
             allValid = false;
         }
 
         if (allValid) {
             JOptionPane.showMessageDialog(this, "Đăng ký thành công! Vui lòng đăng nhập.", "Đăng ký thành công", JOptionPane.INFORMATION_MESSAGE);
             dispose(); // Close registration window
-            new LoginView().setVisible(true); // Open login window
+            new LoginView().setVisible(true); // Open LoginView
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ và chính xác thông tin.", "Lỗi đăng ký", JOptionPane.ERROR_MESSAGE);
         }
