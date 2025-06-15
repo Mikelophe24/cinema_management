@@ -4,48 +4,131 @@ import Dao.UserDao;
 import Model.User;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class LoginView extends JFrame {
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private JButton btnLogin;
+    private static final Color PRIMARY_COLOR = new Color(41, 128, 185);
+    private static final Color BACKGROUND_COLOR = new Color(236, 240, 241);
+    private static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 24);
+    private static final Font LABEL_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    private static final Font BUTTON_FONT = new Font("Segoe UI", Font.BOLD, 14);
 
     public LoginView() {
         setTitle("Đăng nhập hệ thống");
-        setSize(350, 180);
+        setSize(400, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        getContentPane().setBackground(BACKGROUND_COLOR);
         initComponents();
     }
 
     private void initComponents() {
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
-        JLabel lblUsername = new JLabel("Tên đăng nhập:");
-        JLabel lblPassword = new JLabel("Mật khẩu:");
+        // Main panel with padding
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(BACKGROUND_COLOR);
+        mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
 
-        txtUsername = new JTextField();
-        txtPassword = new JPasswordField();
-        btnLogin = new JButton("Đăng nhập");
+        // Title
+        JLabel lblTitle = new JLabel("ĐĂNG NHẬP", SwingConstants.CENTER);
+        lblTitle.setFont(TITLE_FONT);
+        lblTitle.setForeground(PRIMARY_COLOR);
+        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(lblTitle);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // Ấn Enter ở txtUsername → chuyển xuống txtPassword
+        // Username panel
+        JPanel usernamePanel = createInputPanel("Tên đăng nhập:", txtUsername = new JTextField());
+        mainPanel.add(usernamePanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        
+
+        // Password panel
+        JPanel passwordPanel = createInputPanel("Mật khẩu:", txtPassword = new JPasswordField());
+        mainPanel.add(passwordPanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        // Login button
+        btnLogin = new JButton("ĐĂNG NHẬP");
+        styleButton(btnLogin);
+        btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(btnLogin);
+
+        // Add registration link
+        JLabel lblRegister = new JLabel(
+                "<html>Chưa có tài khoản? Vui lòng <font color=\"#2980B9\"><b>Đăng ký</b></font></html>",
+                SwingConstants.CENTER);
+        lblRegister.setFont(LABEL_FONT);
+        lblRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblRegister.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        lblRegister.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                new RegisterUseView().setVisible(true);
+            }
+        });
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainPanel.add(lblRegister);
+
+        // Add event listeners
         txtUsername.addActionListener(e -> txtPassword.requestFocusInWindow());
-
-        // Ấn Enter ở txtPassword → tự động đăng nhập
         txtPassword.addActionListener(e -> handleLogin());
-
-        // Ấn nút → cũng đăng nhập
         btnLogin.addActionListener(e -> handleLogin());
 
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.add(lblUsername);
-        panel.add(txtUsername);
-        panel.add(lblPassword);
-        panel.add(txtPassword);
-        panel.add(new JLabel()); // khoảng trắng
-        panel.add(btnLogin);
+        add(mainPanel);
+    }
 
-        add(panel);
+    private JPanel createInputPanel(String labelText, JTextField textField) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(BACKGROUND_COLOR);
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(LABEL_FONT);
+        label.setForeground(PRIMARY_COLOR);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(label);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+        textField.setMaximumSize(new Dimension(300, 35));
+        textField.setPreferredSize(new Dimension(300, 35));
+        textField.setFont(LABEL_FONT);
+        textField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(PRIMARY_COLOR, 1),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        panel.add(textField);
+
+        return panel;
+    }
+
+    private void styleButton(JButton button) {
+        button.setFont(BUTTON_FONT);
+        button.setForeground(Color.WHITE);
+        button.setBackground(PRIMARY_COLOR);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setMaximumSize(new Dimension(300, 40));
+        button.setPreferredSize(new Dimension(300, 40));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover effect
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(PRIMARY_COLOR.darker());
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(PRIMARY_COLOR);
+            }
+        });
     }
 
     private void handleLogin() {
