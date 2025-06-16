@@ -1,7 +1,6 @@
 package View;
 
-import Dao.UserDao;
-import Model.User;
+import java.awt.GridLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -131,30 +130,33 @@ public class LoginView extends JFrame {
         });
     }
 
-    private void handleLogin() {
-        String username = txtUsername.getText().trim();
-        String password = new String(txtPassword.getPassword());
+	private void handleLogin() {
+		String username = txtUsername.getText().trim();
+		String password = new String(txtPassword.getPassword());
 
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
-            return;
-        }
+		if (username.isEmpty() || password.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
+			return;
+		}
 
-        UserDao userDao = new UserDao();
-        User user = userDao.checkLogin(username, password);
+		AccountDao accountDao = new AccountDao();
+		Account account = accountDao.login(username, password);
 
-        if (user != null) {
-            JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-            dispose(); // đóng cửa sổ đăng nhập
-
-            if ("admin".equalsIgnoreCase(user.getRole())) {
-                new MainAdminView(user).setVisible(true);
-            } else {
-                new HomeUseView(user).setVisible(true);
-            }
-
-        } else {
-            JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng.");
-        }
-    }
+		if (account != null) {
+			JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+			dispose();
+			System.out.println(account.getType());
+			System.out.println(AccountEnum.Role.ADMIN);
+			System.out.println(AccountEnum.Role.CUSTOMER);
+			if (account.getType() == AccountEnum.Role.ADMIN) {
+				new MainAdminView(account).setVisible(true);
+			} else if (account.getType() == AccountEnum.Role.CUSTOMER) {
+				new MainUserView(account).setVisible(true);
+			} else if (account.getType() == AccountEnum.Role.EMPLOYEE) {
+				//
+			}
+		} else {
+			JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng.");
+		}
+	}
 }
