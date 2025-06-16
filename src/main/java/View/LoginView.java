@@ -156,5 +156,6 @@ public class LoginView extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng.");
         }
+//        Nguyễn Huy DŨng
     }
 }
