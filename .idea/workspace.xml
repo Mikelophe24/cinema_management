@@ -4,38 +4,64 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="242d4e1b-1e15-48f7-b4d4-d99b9f5e93fc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Dao/MovieDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Dao/ShowtimeDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Dao/TicketDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Dao/UserDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Main/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Model/Movie.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Model/Showtime.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Model/Ticket.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Model/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/LoginView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/MainAdminView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/MainUserView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/ShowtimeBookingView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/ShowtimeManagementView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/TicketManagementView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/UserManagementView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/View/UserTicketsView.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/util/HashUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/util/MyConnection.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
-    </list>
+    <list default="true" id="242d4e1b-1e15-48f7-b4d4-d99b9f5e93fc" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="minh_merge" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Mikelophe24"
+  }
+}]]></component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="merge_code_minh" />
+                    <option name="lastUsedInstant" value="1750092984" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1750092910" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="main" />
+      </list>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Mikelophe24/cinema_management.git",
+    "accountId": "88ec6e76-5413-4a20-9fff-34a80d9c8eb6"
+  }
+}]]></component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
@@ -47,27 +73,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/java_project/baitaplon_java&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "merge__code__minh",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/java_project/baitaplon_java",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main.Main" />
@@ -111,7 +137,7 @@
       <updated>1749967052302</updated>
       <workItem from="1749967053747" duration="241000" />
       <workItem from="1749967303805" duration="5845000" />
-      <workItem from="1750089500267" duration="971000" />
+      <workItem from="1750089500267" duration="3473000" />
     </task>
     <servers />
   </component>
@@ -129,7 +155,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/merge_code" />
+                        <option value="merge_code_minh" />
                       </list>
                     </value>
                   </entry>
