@@ -12,6 +12,7 @@ import util.Bcrypt;
 
 public class AccountDao {
 	// SQL
+	private static final String SQL_GET_ALL = "SELECT * FROM accounts";
 	private static final String SQL_GET_BY_USERNAME = "SELECT * FROM accounts WHERE username = ?";
 	private static final String SQL_CREATE_BY_ID = "INSERT INTO accounts (username, password, role, status, display_name, avatar) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
@@ -56,6 +57,12 @@ public class AccountDao {
 		}
 
 		return null;
+	}
+
+	public List<Account> getAll() {
+		List<Account> list = new ArrayList<>();
+		list = DatabaseExecutor.queryList(SQL_GET_ALL, Account.class);
+		return list;
 	}
 
 	public boolean update(int id, Map<String, Object> updateFields) {
@@ -145,12 +152,20 @@ public class AccountDao {
 //		}
 
 		// Delete
+//		try {
+//			accountDao.delete(4);
+//			System.out.println("Delete OK");
+//		} catch (Exception e) {
+//			System.err.println("Delete Error: " + e.getMessage());
+//			e.printStackTrace();
+//		}
+
+		// Get All
 		try {
-			accountDao.delete(4);
-			System.out.println("Delete OK");
+			List<Account> accounts = accountDao.getAll();
+			System.out.println(accounts);
 		} catch (Exception e) {
-			System.err.println("Delete Error: " + e.getMessage());
-			e.printStackTrace();
+			// TODO: handle exception
 		}
 	}
 }
