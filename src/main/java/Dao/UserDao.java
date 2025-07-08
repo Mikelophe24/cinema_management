@@ -35,9 +35,16 @@ public class UserDao<T> {
 	public T create(int accountId, String fullName, String email, String phoneNumber, String address,
 			LocalDate birthday, int gender, LocalDate hireDate) {
 
-		boolean isExist = DatabaseExecutor.exists(AccountDao.SQL_CHECK_EXIST_BY_ID, accountId);
-		if (!isExist) {
+		boolean isExistAccount = DatabaseExecutor.exists(AccountDao.SQL_CHECK_EXIST_BY_ID, accountId);
+		if (!isExistAccount) {
 			throw new RuntimeException("Account not exist");
+		}
+
+		String SQL_CHECK_EXIST_BY_ACCOUNT_ID = "SELECT 1 FROM " + this.table + " WHERE id = ?";
+
+		boolean isExistUser = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_ACCOUNT_ID, accountId);
+		if (isExistUser) {
+			throw new RuntimeException(this.role.getValue().toUpperCase() + " has exist");
 		}
 
 		boolean isEmployee = this.role == AccountEnum.Role.EMPLOYEE;
