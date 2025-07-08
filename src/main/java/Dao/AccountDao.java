@@ -17,8 +17,8 @@ public class AccountDao {
 	private static final String SQL_CREATE_BY_ID = "INSERT INTO accounts (username, password, role, status, display_name, avatar) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String SQL_DELETE_BY_ID = "DELETE FROM accounts WHERE id = ?";
-	private static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
-	private static final String SQL_CHECK_EXIST_BY_USERNAME = "SELECT 1 FROM accounts WHERE username = ?";
+	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
+	static final String SQL_CHECK_EXIST_BY_USERNAME = "SELECT 1 FROM accounts WHERE username = ?";
 	// Constants
 	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status" };
 
@@ -48,7 +48,7 @@ public class AccountDao {
 		newAccount.setDisplayName(displayName);
 		newAccount.setAvatar(null);
 
-		int rows = DatabaseExecutor.update(SQL_CREATE_BY_ID, newAccount.getUsername(), newAccount.getPassword(),
+		long rows = DatabaseExecutor.insert(SQL_CREATE_BY_ID, newAccount.getUsername(), newAccount.getPassword(),
 				newAccount.getRole().name(), newAccount.getStatus().name(), newAccount.getDisplayName(),
 				newAccount.getAvatar());
 
@@ -121,7 +121,7 @@ public class AccountDao {
 	public static void main(String[] args) {
 		// Register
 //		try {
-//			Account account = accountDao.register("test", "123456", "Test User", null,
+//			Account account = AccountDao.register("test123", "123456", "Test User", null,
 //					AccountEnum.Role.CUSTOMER.getValue());
 //
 //			if (account != null) {
@@ -159,11 +159,11 @@ public class AccountDao {
 //		}
 
 		// Get All
-		try {
-			List<Account> accounts = AccountDao.getAll();
-			System.out.println(accounts);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+//		try {
+//			List<Account> accounts = AccountDao.getAll();
+//			System.out.println(accounts);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
 	}
 }
