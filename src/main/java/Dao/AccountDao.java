@@ -22,12 +22,12 @@ public class AccountDao {
 	// Constants
 	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status" };
 
-	public Account login(String username, String password) {
+	public static Account login(String username, String password) {
 		Account account = DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
 		return account;
 	}
 
-	public Account register(String username, String password, String displayName, String avatar, String role) {
+	public static Account register(String username, String password, String displayName, String avatar, String role) {
 		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_USERNAME, username);
 		if (isExist) {
 			throw new RuntimeException("Username has exist");
@@ -59,13 +59,13 @@ public class AccountDao {
 		return null;
 	}
 
-	public List<Account> getAll() {
+	public static List<Account> getAll() {
 		List<Account> list = new ArrayList<>();
 		list = DatabaseExecutor.queryList(SQL_GET_ALL, Account.class);
 		return list;
 	}
 
-	public boolean update(int id, Map<String, Object> updateFields) {
+	public static boolean update(int id, Map<String, Object> updateFields) {
 		if (updateFields == null || updateFields.isEmpty()) {
 			throw new IllegalArgumentException("No fields update");
 		}
@@ -106,7 +106,7 @@ public class AccountDao {
 		return DatabaseExecutor.update(sql.toString(), params.toArray()) > 0;
 	}
 
-	public boolean delete(int id) {
+	public static boolean delete(int id) {
 		if (id < 0) {
 			return false;
 		}
@@ -119,8 +119,6 @@ public class AccountDao {
 
 	// Main test
 	public static void main(String[] args) {
-		AccountDao accountDao = new AccountDao();
-
 		// Register
 //		try {
 //			Account account = accountDao.register("test", "123456", "Test User", null,
@@ -162,7 +160,7 @@ public class AccountDao {
 
 		// Get All
 		try {
-			List<Account> accounts = accountDao.getAll();
+			List<Account> accounts = AccountDao.getAll();
 			System.out.println(accounts);
 		} catch (Exception e) {
 			// TODO: handle exception
