@@ -3,16 +3,15 @@ package Model;
 import java.time.LocalDateTime;
 
 import Enum.AccountEnum;
-import Enum.AccountEnum.Role;
 import Enum.AccountEnum.Status;
 
 public class Account {
 	private int id;
 	private String username;
 	private String password;
-	private AccountEnum.Role type;
+	private AccountEnum.Role role;
 	private AccountEnum.Status status;
-	private String display_name;
+	private String displayName;
 	private String avatar;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -20,15 +19,15 @@ public class Account {
 	public Account() {
 	}
 
-	public Account(int accountId, String username, String password, Role type, Status status, String display_name,
-			String avatar, LocalDateTime createdAt, LocalDateTime updatedAt) {
+	public Account(int accountId, String username, String password, AccountEnum.Role role, Status status,
+			String display_name, String avatar, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
 		this.id = accountId;
 		this.username = username;
 		this.password = password;
-		this.type = type;
+		this.role = role;
 		this.status = status;
-		this.display_name = display_name;
+		this.displayName = display_name;
 		this.avatar = avatar;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -58,12 +57,12 @@ public class Account {
 		this.password = password;
 	}
 
-	public AccountEnum.Role getType() {
-		return type;
+	public AccountEnum.Role getRole() {
+		return role;
 	}
 
-	public void setType(AccountEnum.Role type) {
-		this.type = type;
+	public void setRole(AccountEnum.Role role) {
+		this.role = role;
 	}
 
 	public AccountEnum.Status getStatus() {
@@ -75,11 +74,11 @@ public class Account {
 	}
 
 	public String getDisplayName() {
-		return display_name;
+		return displayName;
 	}
 
 	public void setDisplayName(String display_name) {
-		this.display_name = display_name;
+		this.displayName = display_name;
 	}
 
 	public String getAvatar() {
@@ -108,8 +107,8 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "AccountModel [id=" + id + ", username=" + username + ", password=" + password + ", type=" + type
-				+ ", status=" + status + ", display_name=" + display_name + ", avatar=" + avatar + ", createdAt="
+		return "AccountModel [id=" + id + ", username=" + username + ", password=" + password + ", type=" + role
+				+ ", status=" + status + ", display_name=" + displayName + ", avatar=" + avatar + ", createdAt="
 				+ createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 

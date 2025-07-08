@@ -36,9 +36,9 @@ Dựa trên cơ sở dữ liệu, bạn có thể xây dựng phần mềm với
 4. **Thanh toán và hóa đơn**:
    - Tạo hóa đơn cho vé và sản phẩm.
    - Hỗ trợ thanh toán trực tuyến qua tài khoản ngân hàng.
-5. **Quản lý sản phẩm**:
+<!-- 5. **Quản lý sản phẩm**:
    - Bán đồ ăn, thức uống tại rạp.
-   - Quản lý nhà cung cấp và danh mục sản phẩm.
+   - Quản lý nhà cung cấp và danh mục sản phẩm. -->
 6. **Phản hồi và đánh giá**:
    - Thu thập phản hồi khách hàng và điểm đánh giá phim.
    - Phân tích ý kiến để cải thiện dịch vụ.
@@ -47,7 +47,16 @@ Dựa trên cơ sở dữ liệu, bạn có thể xây dựng phần mềm với
    - Phân tích tỷ lệ lấp đầy ghế và đánh giá phim.
 8. **Quản trị hệ thống**:
    - Quản lý phòng chiếu, nhân viên, và dữ liệu.
-   - Sao lưu và khôi phục cơ sở dữ liệu.
+   <!-- - Sao lưu và khôi phục cơ sở dữ liệu. -->
+
+
+# Phân công nhiệm vụ
+1. Vũ: view admin
+2. Dũng: view user
+3. Minh: logic User
+4. Trận: support V & D
+5. Khôi: logic Admin
+
 
 ## Role
 - **Quản trị viên**:

@@ -157,14 +157,14 @@ public class LoginView extends JFrame {
 		if (account != null) {
 			JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
 			dispose();
-			System.out.println(account.getType());
+			System.out.println(account.getRole());
 			System.out.println(AccountEnum.Role.ADMIN);
 			System.out.println(AccountEnum.Role.CUSTOMER);
-			if (account.getType() == AccountEnum.Role.ADMIN) {
+			if (account.getRole() == AccountEnum.Role.ADMIN) {
 				new MainAdminView(account).setVisible(true);
-			} else if (account.getType() == AccountEnum.Role.CUSTOMER) {
+			} else if (account.getRole() == AccountEnum.Role.CUSTOMER) {
 				new MainUserView(account).setVisible(true);
-			} else if (account.getType() == AccountEnum.Role.EMPLOYEE) {
+			} else if (account.getRole() == AccountEnum.Role.EMPLOYEE) {
 				//
 			}
 		} else {

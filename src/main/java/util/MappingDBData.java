@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class MappingDBData {
+
 	public static <T> T mapResultSetToObject(ResultSet rs, Class<T> classType) {
 		try {
 			T instance = classType.getDeclaredConstructor().newInstance();
@@ -22,7 +23,8 @@ public class MappingDBData {
 					continue;
 
 				try {
-					Field field = classType.getDeclaredField(toCamelCase(column));
+					String fieldName = toCamelCase(column);
+					Field field = classType.getDeclaredField(fieldName);
 					field.setAccessible(true);
 					Class<?> fieldType = field.getType();
 
@@ -32,10 +34,13 @@ public class MappingDBData {
 						field.set(instance, enumValue);
 					} else if (fieldType.equals(LocalDateTime.class) && value instanceof Timestamp) {
 						field.set(instance, ((Timestamp) value).toLocalDateTime());
+					} else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
+						field.set(instance, Boolean.parseBoolean(value.toString()));
 					} else {
 						field.set(instance, value);
 					}
 				} catch (NoSuchFieldException ignored) {
+					//
 				}
 			}
 			return instance;
@@ -54,7 +59,7 @@ public class MappingDBData {
 				sb.append(Character.toUpperCase(c));
 				nextUpper = false;
 			} else {
-				sb.append(c);
+				sb.append(Character.toLowerCase(c));
 			}
 		}
 		return sb.toString();

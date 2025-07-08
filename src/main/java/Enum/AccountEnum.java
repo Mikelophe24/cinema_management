@@ -23,6 +23,18 @@ public class AccountEnum {
 			}
 			throw new IllegalArgumentException("No enum constant Role with value: " + value);
 		}
+
+		public static boolean isValidRole(String value) {
+			if (value == "" || value == null)
+				return false;
+			for (AccountEnum.Role role : AccountEnum.Role.values()) {
+				if (role.getValue().equalsIgnoreCase(value)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 	}
 
 	public enum Status {
