@@ -98,18 +98,18 @@ public class DatabaseExecutor {
 		return false;
 	}
 
-	public static int[] executeBatch(String sql, List<Object[]> batchParams) {
-		try (Connection conn = MyConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-			for (Object[] params : batchParams) {
-				setParams(stmt, params);
-				stmt.addBatch();
-			}
-			return stmt.executeBatch();
-		} catch (Exception e) {
-			handleException(e, sql);
-		}
-		return new int[0];
-	}
+//	public static int[] executeBatch(String sql, List<Object[]> batchParams) {
+//		try (Connection conn = MyConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+//			for (Object[] params : batchParams) {
+//				setParams(stmt, params);
+//				stmt.addBatch();
+//			}
+//			return stmt.executeBatch();
+//		} catch (Exception e) {
+//			handleException(e, sql);
+//		}
+//		return new int[0];
+//	}
 
 	public static boolean execute(String sql, Object... params) {
 		try (Connection conn = MyConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {

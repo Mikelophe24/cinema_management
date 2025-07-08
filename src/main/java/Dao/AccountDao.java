@@ -12,22 +12,23 @@ import util.Bcrypt;
 
 public class AccountDao {
 	// SQL
-	private static final String SQL_GET_ACCOUNT_BY_USERNAME = "SELECT * FROM accounts WHERE username = ?";
-	private static final String SQL_CREATE_ACCOUNT_BY_ID = "INSERT INTO accounts (username, password, role, status, display_name, avatar) "
+	private static final String SQL_GET_BY_USERNAME = "SELECT * FROM accounts WHERE username = ?";
+	private static final String SQL_CREATE_BY_ID = "INSERT INTO accounts (username, password, role, status, display_name, avatar) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String SQL_DELTE_ACCOUNT_BY_ID = "DELETE FROM accounts WHERE id = ?";
+	private static final String SQL_DELETE_BY_ID = "DELETE FROM accounts WHERE id = ?";
+	private static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
+	private static final String SQL_CHECK_EXIST_BY_USERNAME = "SELECT 1 FROM accounts WHERE username = ?";
 	// Constants
 	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status" };
 
 	public Account login(String username, String password) {
-		Account account = DatabaseExecutor.queryOne(SQL_GET_ACCOUNT_BY_USERNAME, Account.class, username);
-		System.out.println("Account: " + account);
+		Account account = DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
 		return account;
 	}
 
 	public Account register(String username, String password, String displayName, String avatar, String role) {
-		Account existing = DatabaseExecutor.queryOne(SQL_GET_ACCOUNT_BY_USERNAME, Account.class, username);
-		if (existing != null) {
+		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_USERNAME, username);
+		if (isExist) {
 			throw new RuntimeException("Username has exist");
 		}
 
@@ -46,12 +47,12 @@ public class AccountDao {
 		newAccount.setDisplayName(displayName);
 		newAccount.setAvatar(null);
 
-		int rows = DatabaseExecutor.update(SQL_CREATE_ACCOUNT_BY_ID, newAccount.getUsername(), newAccount.getPassword(),
+		int rows = DatabaseExecutor.update(SQL_CREATE_BY_ID, newAccount.getUsername(), newAccount.getPassword(),
 				newAccount.getRole().name(), newAccount.getStatus().name(), newAccount.getDisplayName(),
 				newAccount.getAvatar());
 
 		if (rows > 0) {
-			return DatabaseExecutor.queryOne(SQL_GET_ACCOUNT_BY_USERNAME, Account.class, username);
+			return DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
 		}
 
 		return null;
@@ -59,7 +60,12 @@ public class AccountDao {
 
 	public boolean update(int id, Map<String, Object> updateFields) {
 		if (updateFields == null || updateFields.isEmpty()) {
-			throw new IllegalArgumentException("Không có trường nào để cập nhật.");
+			throw new IllegalArgumentException("No fields update");
+		}
+
+		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_ID, id);
+		if (!isExist) {
+			throw new RuntimeException("Account not found");
 		}
 
 		StringBuilder sql = new StringBuilder("UPDATE accounts SET ");
@@ -89,14 +95,26 @@ public class AccountDao {
 		sql.append(" WHERE id = ?");
 		params.add(id);
 
-		int affectedRows = DatabaseExecutor.update(sql.toString(), params.toArray());
-		return affectedRows > 0;
+//		int affectedRows = DatabaseExecutor.update(sql.toString(), params.toArray());
+		return DatabaseExecutor.update(sql.toString(), params.toArray()) > 0;
 	}
 
+	public boolean delete(int id) {
+		if (id < 0) {
+			return false;
+		}
+		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_ID, id);
+		if (!isExist) {
+			throw new RuntimeException("Account not found");
+		}
+		return DatabaseExecutor.delete(SQL_DELETE_BY_ID, id) > 0;
+	}
+
+	// Main test
 	public static void main(String[] args) {
 		AccountDao accountDao = new AccountDao();
 
-		// Test register no View
+		// Register
 //		try {
 //			Account account = accountDao.register("test", "123456", "Test User", null,
 //					AccountEnum.Role.CUSTOMER.getValue());
@@ -111,7 +129,7 @@ public class AccountDao {
 //			e.printStackTrace();
 //		}
 
-		// Test update
+		// Update
 //		try {
 //			Map<String, Object> updateFields = new HashMap<>();
 //			updateFields.put("display_name", "testUpdateAccount");
@@ -125,6 +143,14 @@ public class AccountDao {
 //			System.err.println("Upadate Error: " + e.getMessage());
 //			e.printStackTrace();
 //		}
-	}
 
+		// Delete
+		try {
+			accountDao.delete(4);
+			System.out.println("Delete OK");
+		} catch (Exception e) {
+			System.err.println("Delete Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }
