@@ -16,7 +16,7 @@ public class AccountDao {
 	// SQL
 	private static final String SQL_GET_ALL = "SELECT * FROM accounts";
 	private static final String SQL_GET_BY_USERNAME = "SELECT * FROM accounts WHERE username = ?";
-	private static final String SQL_CREATE_BY_ID = "INSERT INTO accounts (username, password, role, status, display_name, avatar) "
+	private static final String SQL_CREATE = "INSERT INTO accounts (username, password, role, status, display_name, avatar) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String SQL_DELETE_BY_ID = "DELETE FROM accounts WHERE id = ?";
 	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
@@ -46,7 +46,7 @@ public class AccountDao {
 			throw new RuntimeException("Invalid Role");
 		}
 
-		long rows = DatabaseExecutor.insert(SQL_CREATE_BY_ID, username, password, role.getValue(),
+		long rows = DatabaseExecutor.insert(SQL_CREATE, username, password, role.getValue(),
 				AccountEnum.Status.ACTIVE.getValue(), displayName, avatar);
 
 		if (rows > 0) {

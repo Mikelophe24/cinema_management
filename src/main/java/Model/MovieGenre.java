@@ -1,14 +1,14 @@
 package Model;
 
-public class MovieGerne {
+public class MovieGenre {
 	private int id;
 	private String name;
 	private String description;
 
-	public MovieGerne() {
+	public MovieGenre() {
 	}
 
-	public MovieGerne(int id, String name, String description) {
+	public MovieGenre(int id, String name, String description) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
