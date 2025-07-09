@@ -172,9 +172,9 @@ public class UserDao<T> {
 //			List<Customer> customers = customerDao.getAll();
 //			System.out.println("All Customers: " + customers);
 //
-//			// Get All Employees
-//			List<Employee> employees = employeeDao.getAll();
-//			System.out.println("All Employees: " + employees);
+			// Get All Employees
+			List<Employee> employees = employeeDao.getAll();
+			System.out.println("All Employees: " + employees);
 
 			// Update
 //			Map<String, Object> updateFields = new HashMap<>();
