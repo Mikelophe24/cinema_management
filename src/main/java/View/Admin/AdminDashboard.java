@@ -53,12 +53,12 @@ public class AdminDashboard extends JFrame {
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBackground(Color.WHITE);
 
-        contentPanel.add(createPlaceholderPanel("🎞 Quản lý phim"), "movies");
-        contentPanel.add(createPlaceholderPanel("🏢 Quản lý phòng"), "rooms");
-        contentPanel.add(createPlaceholderPanel("👤 Quản lý tài khoản"), "accounts");
-        contentPanel.add(createPlaceholderPanel("🧑‍💼 Quản lý nhân viên"), "staff");
-        contentPanel.add(createPlaceholderPanel("🧍‍♂️ Quản lý khách hàng"), "customers");
-        contentPanel.add(createPlaceholderPanel("🧾 Quản lý hóa đơn"), "invoices");
+        contentPanel.add(new MoviesPanel(), "movies");
+        contentPanel.add(new RoomsPanel(), "rooms");
+        contentPanel.add(new AccountsPanel(), "accounts");
+        contentPanel.add(new StaffPanel(), "staff");
+        contentPanel.add(new CustomersPanel(), "customers");
+        contentPanel.add(new InvoicesPanel(), "invoices");
 
         add(contentPanel);
 
