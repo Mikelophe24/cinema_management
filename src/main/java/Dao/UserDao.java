@@ -1,135 +1,205 @@
 package Dao;
 
-import Model.User;
-import util.Bcrypt;
-import util.MyConnection;
-
-import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class UserDao {
+import Enum.AccountEnum;
+import Helper.DatabaseExecutor;
+import Model.Customer;
+import Model.Employee;
 
-    // ✅ 1. Kiểm tra đăng nhập
-    public User checkLogin(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username=? AND password=?";
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            stmt.setString(2, password);  // Có thể dùng HashUtil nếu mã hoá
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("username"),
-                        rs.getString("password"), rs.getString("role"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+public class UserDao<T> {
+	private AccountEnum.Role role;
+	private String table;
+	private Class<T> clazz;
 
-    // ✅ 2. Lấy toàn bộ user
-    public List<User> getAllUsers() {
-        List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+	// Constants
+	private static final String UPDATED_FIELDS[] = { "full_name", "email", "phone_number", "address", "birthday",
+			"gender", "hire_date" };
 
-        try (Connection conn = MyConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+	@SuppressWarnings("unchecked")
+	public UserDao(AccountEnum.Role role) {
+		if (!AccountEnum.Role.isValidRole(role.getValue())) {
+			throw new RuntimeException("Invalid Role");
+		}
+		this.role = role;
+		this.table = role.getValue() + "s";
 
-            while (rs.next()) {
-                User u = new User();
-                u.setId(rs.getInt("id"));
-                u.setUsername(rs.getString("username"));
-                u.setPassword(rs.getString("password"));
-                u.setRole(rs.getString("role"));
-                list.add(u);
-            }
+		switch (role) {
+		case EMPLOYEE:
+			this.clazz = (Class<T>) Employee.class;
+			break;
+		case CUSTOMER:
+			this.clazz = (Class<T>) Customer.class;
+			break;
+		default:
+			throw new RuntimeException("Invalid Role");
+		}
+	}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	public T create(int accountId, String fullName, String email, String phoneNumber, String address,
+			LocalDate birthday, int gender, LocalDate hireDate) {
 
-        return list;
-    }
+		boolean isExistAccount = DatabaseExecutor.exists(AccountDao.SQL_CHECK_EXIST_BY_ID, accountId);
+		if (!isExistAccount) {
+			throw new RuntimeException("Account not exist");
+		}
 
-    // ✅ 3. Tìm kiếm user theo tên
-    public List<User> searchUsers(String keyword) {
-        List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM users WHERE username LIKE ?";
+		String SQL_CHECK_EXIST_BY_ACCOUNT_ID = "SELECT 1 FROM " + this.table + " WHERE account_id = ?";
+		boolean isExistUser = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_ACCOUNT_ID, accountId);
+		if (isExistUser) {
+			throw new RuntimeException(this.role.getValue().toUpperCase() + " has exist");
+		}
 
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+		boolean isEmployee = this.role == AccountEnum.Role.EMPLOYEE;
 
-            stmt.setString(1, "%" + keyword + "%");
-            ResultSet rs = stmt.executeQuery();
+		String sqlCreate = "INSERT INTO " + this.table
+				+ " (account_id, full_name, email, phone_number, address, birthday, gender";
+		String sqlQueryOne = "SELECT * FROM " + this.table + " WHERE account_id = ?";
 
-            while (rs.next()) {
-                User u = new User();
-                u.setId(rs.getInt("id"));
-                u.setUsername(rs.getString("username"));
-                u.setPassword(rs.getString("password"));
-                u.setRole(rs.getString("role"));
-                list.add(u);
-            }
+		if (isEmployee) {
+			sqlCreate += ", hire_date)";
+		} else {
+			sqlCreate += ")";
+		}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+		sqlCreate += " VALUES (?, ?, ?, ?, ?, ?, ?";
+		if (isEmployee) {
+			sqlCreate += ", ?)";
+		} else {
+			sqlCreate += ")";
+		}
 
-        return list;
-    }
+		long rows;
+		if (isEmployee) {
+			rows = DatabaseExecutor.insert(sqlCreate, accountId, fullName, email, phoneNumber, address, birthday,
+					gender, hireDate);
+		} else {
+			rows = DatabaseExecutor.insert(sqlCreate, accountId, fullName, email, phoneNumber, address, birthday,
+					gender);
+		}
 
-    // ✅ 4. Thêm user
-    public boolean addUser(User user) {
-        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+		if (rows > 0) {
+			return DatabaseExecutor.queryOne(sqlQueryOne, clazz, accountId);
+		}
 
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+		return null;
+	}
 
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword()); // nên mã hoá nếu cần
-            stmt.setString(3, user.getRole());
-            return stmt.executeUpdate() > 0;
+	public List<T> getAll() {
+		String SQL_GET_ALL = "SELECT * FROM " + this.table;
+		List<T> list = new ArrayList<>();
+		list = DatabaseExecutor.queryList(SQL_GET_ALL, clazz);
+		return list;
+	}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	public boolean update(int id, Map<String, Object> updateFields) {
+		if (updateFields == null || updateFields.isEmpty()) {
+			throw new IllegalArgumentException("No fields to update");
+		}
 
-    // ✅ 5. Sửa user
-    public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username=?, password=?, role=? WHERE id=?";
+		String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM " + this.table + " WHERE id = ?";
+		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_ID, id);
+		if (!isExist) {
+			throw new RuntimeException(this.role.getValue().toUpperCase() + " not found");
+		}
 
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+		StringBuilder sql = new StringBuilder("UPDATE " + this.table + " SET ");
+		List<Object> params = new ArrayList<>();
+		int count = 0;
 
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getRole());
-            stmt.setInt(4, user.getId());
-            return stmt.executeUpdate() > 0;
+		for (Map.Entry<String, Object> entry : updateFields.entrySet()) {
+			String key = entry.getKey();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+			boolean isAllowed = Arrays.stream(UPDATED_FIELDS).anyMatch(field -> field.equalsIgnoreCase(key));
+			if (!isAllowed) {
+				throw new RuntimeException("Field " + key + " not allowed");
+			}
 
-    // ✅ 6. Xoá user
-    public boolean deleteUser(int id) {
-        String sql = "DELETE FROM users WHERE id=?";
+			if ("hire_date".equalsIgnoreCase(key) && this.role != AccountEnum.Role.EMPLOYEE) {
+				throw new RuntimeException("Field hire_date not allowed for " + this.role.getValue());
+			}
 
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+			if (count > 0) {
+				sql.append(", ");
+			}
+			sql.append(key).append(" = ?");
+			params.add(entry.getValue());
+			count++;
+		}
 
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+		if (count == 0) {
+			return false;
+		}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+		sql.append(" WHERE id = ?");
+		params.add(id);
+
+		return DatabaseExecutor.update(sql.toString(), params.toArray()) > 0;
+	}
+
+	public boolean delete(int id) {
+		if (id < 0) {
+			return false;
+		}
+		String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM " + this.table + " WHERE id = ?";
+		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_ID, id);
+		if (!isExist) {
+			throw new RuntimeException(this.role.getValue().toUpperCase() + " not found");
+		}
+		String SQL_DELETE_BY_ACCOUNT_ID = "DELETE FROM " + this.table + " WHERE id = ?";
+		return DatabaseExecutor.delete(SQL_DELETE_BY_ACCOUNT_ID, id) > 0;
+	}
+
+	public static void main(String[] args) {
+		try {
+			UserDao<Customer> customerDao = new UserDao<>(AccountEnum.Role.CUSTOMER);
+			UserDao<Employee> employeeDao = new UserDao<>(AccountEnum.Role.EMPLOYEE);
+			// Create Customer
+//			Customer customer = customerDao.create(3, "Nguyễn Văn A", "a@example.com", "0123456789", "123 Đường ABC",
+//					LocalDate.of(2000, 1, 1), 1, null);
+//			System.out.println("Created Customer: " + customer);
+
+			// Create Employee
+//			Employee employee = employeeDao.create(2, "Trần Văn B", "b@example.com", "0987654321", "456 Đường XYZ",
+//					LocalDate.of(1995, 5, 5), 1, LocalDate.now());
+//			System.out.println("Created Employee: " + employee);
+//
+			// Get All Customers
+//			List<Customer> customers = customerDao.getAll();
+//			System.out.println("All Customers: " + customers);
+//
+//			// Get All Employees
+//			List<Employee> employees = employeeDao.getAll();
+//			System.out.println("All Employees: " + employees);
+
+			// Update
+//			Map<String, Object> updateFields = new HashMap<>();
+//			updateFields.put("full_name", "Updated");
+//			updateFields.put("email", "updated@example.com");
+//			updateFields.put("phone_number", "00000000000");
+//
+//			boolean updated = customerDao.update(1, updateFields);
+//			if (updated) {
+//				System.out.println("Update Customer OK");
+//			} else {
+//				System.out.println("Update Customer failed");
+//			}
+
+			// Delete
+//			boolean deleted = employeeDao.delete(9);
+//			if (deleted) {
+//				System.out.println("Delete Customer OK");
+//			} else {
+//				System.out.println("Delete Customer failed");
+//			}
+
+		} catch (Exception e) {
+			System.err.println("UserDao Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }
