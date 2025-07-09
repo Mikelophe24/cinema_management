@@ -187,7 +187,6 @@ public class MovieDao {
 		public String toString() {
 			return "MovieWithGenres [movie=" + movie + ", genres=" + Arrays.toString(genres) + "]";
 		}
-
 	}
 
 	public static class GenresOfMovie {

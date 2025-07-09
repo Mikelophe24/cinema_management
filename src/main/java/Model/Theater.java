@@ -11,12 +11,22 @@ public class Theater {
 	private String description;
 	private String image;
 
-	protected Theater() {
+	public Theater() {
 	}
 
-	protected Theater(int id, String name, TheaterEnum.Status status, int capacity, int seatCount, String description,
+	public Theater(int id, String name, TheaterEnum.Status status, int capacity, int seatCount, String description,
 			String image) {
 		this.id = id;
+		this.name = name;
+		this.status = status;
+		this.capacity = capacity;
+		this.seatCount = seatCount;
+		this.description = description;
+		this.image = image;
+	}
+
+	public Theater(String name, TheaterEnum.Status status, int capacity, int seatCount, String description,
+			String image) {
 		this.name = name;
 		this.status = status;
 		this.capacity = capacity;

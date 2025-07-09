@@ -2,7 +2,7 @@ package Enum;
 
 public class SeatEnum {
 	public enum Type {
-		NORMAL("normal"), VIP("vip"), COUPLE("couple");
+		NORMAL("normal"), COUPLE("couple");
 
 		private final String value;
 

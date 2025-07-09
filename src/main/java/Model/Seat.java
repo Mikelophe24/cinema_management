@@ -9,13 +9,20 @@ public class Seat {
 	private String name;
 	private SeatEnum.Type type;
 
-	protected Seat() {
+	public Seat() {
 		super();
 	}
 
-	protected Seat(int id, int theaterId, String name, Type type) {
+	public Seat(int id, int theaterId, String name, Type type) {
 		super();
 		this.id = id;
+		this.theaterId = theaterId;
+		this.name = name;
+		this.type = type;
+	}
+
+	public Seat(int theaterId, String name, Type type) {
+		super();
 		this.theaterId = theaterId;
 		this.name = name;
 		this.type = type;
