@@ -38,11 +38,12 @@ public class PaymentView extends JDialog {
         infoPanel.add(Box.createVerticalStrut(15));
 
         // User info
+        JTextField nameField = new JTextField("", 15);
+        JTextField phoneField = new JTextField("", 15);
         JPanel row1 = new JPanel(new GridLayout(1, 3, 20, 0));
         row1.setBackground(Color.WHITE);
-        row1.add(createInfoField("Họ Tên:", ""));
-        row1.add(createInfoField("Số điện thoại:", ""));
-        row1.add(createInfoField("Email:", ""));
+        row1.add(createInfoField("Họ Tên:", nameField));
+        row1.add(createInfoField("Số điện thoại:", phoneField));
         infoPanel.add(row1);
         infoPanel.add(Box.createVerticalStrut(15));
 
@@ -85,14 +86,17 @@ public class PaymentView extends JDialog {
         comboPanel.add(new JSeparator());
 
         // Combo list with prices
-        int[] comboPrices = {95000, 56000, 28000, 46000}; // Prices for each combo
-        comboPanel.add(createComboRowV2("Family Combo 69oz", "TIẾT KIỆM 95K!! Gồm: 2 Bắp (69oz) + 4 Nước có gaz (22oz) + 2 Snack Oishi (80g)", 0, "https://files.betacorp.vn/media/combopackage/2025/07/02/combo-online-05-134512-020725-51.png", comboPrices[0]));
+        // Giá combo cố định
+        int[] comboPrices = {95000, 56000, 28000, 46000};
+        // Biến lưu số lượng từng combo
+        final int[] comboQuantities = {0, 0, 0, 0};
+        comboPanel.add(createComboRowV2("Family Combo 69oz", "TIẾT KIỆM 95K!! Gồm: 2 Bắp (69oz) + 4 Nước có gaz (22oz) + 2 Snack Oishi (80g)", 0, "https://files.betacorp.vn/media/combopackage/2025/07/02/combo-online-05-134512-020725-51.png", comboPrices[0], comboQuantities, 0));
         comboPanel.add(new JSeparator());
-        comboPanel.add(createComboRowV2("Combo See Mê - Cầu Vồng", "TIẾT KIỆM 56K!!! Sở hữu ngay: 1 Ly Cầu Vồng kèm nước + 1 Bắp (69oz)", 0, "https://files.betacorp.vn/media/combopackage/2024/04/17/combo-online-19-100930-170424-86.png", comboPrices[1]));
+        comboPanel.add(createComboRowV2("Combo See Mê - Cầu Vồng", "TIẾT KIỆM 56K!!! Sở hữu ngay: 1 Ly Cầu Vồng kèm nước + 1 Bắp (69oz)", 0, "https://files.betacorp.vn/media/combopackage/2024/04/17/combo-online-19-100930-170424-86.png", comboPrices[1], comboQuantities, 1));
         comboPanel.add(new JSeparator());
-        comboPanel.add(createComboRowV2("Beta Combo 69oz", "TIẾT KIỆM 28K!!! Gồm: 1 Bắp (69oz) + 1 Nước có gaz (22oz)", 0, "https://files.betacorp.vn/media/combopackage/2025/07/02/combo-online-03-134211-020725-96.png", comboPrices[2]));
+        comboPanel.add(createComboRowV2("Beta Combo 69oz", "TIẾT KIỆM 28K!!! Gồm: 1 Bắp (69oz) + 1 Nước có gaz (22oz)", 0, "https://files.betacorp.vn/media/combopackage/2025/07/02/combo-online-03-134211-020725-96.png", comboPrices[2], comboQuantities, 2));
         comboPanel.add(new JSeparator());
-        comboPanel.add(createComboRowV2("Sweet Combo 69oz", "TIẾT KIỆM 46K!!! Gồm: 1 Bắp (69oz) + 2 Nước có gaz (22oz)", 0, "https://files.betacorp.vn/media/combopackage/2025/07/02/combo-online-04-134413-020725-25.png", comboPrices[3]));
+        comboPanel.add(createComboRowV2("Sweet Combo 69oz", "TIẾT KIỆM 46K!!! Gồm: 1 Bắp (69oz) + 2 Nước có gaz (22oz)", 0, "https://files.betacorp.vn/media/combopackage/2025/07/02/combo-online-04-134413-020725-25.png", comboPrices[3], comboQuantities, 3));
 
         // Total amount
         JPanel totalPanel = new JPanel(new GridBagLayout());
@@ -141,12 +145,18 @@ public class PaymentView extends JDialog {
         ButtonGroup group = new ButtonGroup();
 
         String[] methods = {"Tiền mặt", "Chuyển khoản"};
+        JRadioButton[] methodButtons = new JRadioButton[methods.length];
+        int[] selectedMethod = {0}; // 0: Tiền mặt, 1: Chuyển khoản
         for (int i = 0; i < methods.length; i++) {
             JPanel item = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
             item.setBackground(Color.WHITE);
             JRadioButton rb = new JRadioButton();
             rb.setBackground(Color.WHITE);
             group.add(rb);
+            methodButtons[i] = rb;
+            if (i == 0) rb.setSelected(true);
+            int idx = i;
+            rb.addActionListener(e -> selectedMethod[0] = idx);
             JLabel label = new JLabel(methods[i]);
             label.setFont(new Font("Arial", Font.PLAIN, 14));
             item.add(rb);
@@ -165,6 +175,59 @@ public class PaymentView extends JDialog {
         nextBtn.setPreferredSize(new Dimension(120, 40));
         nextBtn.setFocusPainted(false);
         nextBtn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Lưu các tham số truyền vào để dùng khi mở BillView hoặc QRView
+        final String _movieName = movieName;
+        final String _genre = genre;
+        final String _duration = duration;
+        final String _cinemaName = cinemaName;
+        final String _showDate = showDate;
+        final String _showTime = showTime;
+        final java.util.List<String> _selectedSeats = selectedSeats;
+        final int _totalAmount = totalAmount;
+
+        // Lấy tham chiếu đến các trường nhập Họ Tên và Số điện thoại
+        // JPanel row1 = (JPanel) ((JPanel) ((JPanel) ((JPanel) leftContentPanel.getComponent(0)).getComponent(0)).getComponent(0));
+        // JTextField nameField = (JTextField) ((JPanel) row1.getComponent(0)).getComponent(1);
+        // JTextField phoneField = (JTextField) ((JPanel) row1.getComponent(1)).getComponent(1);
+        nextBtn.addActionListener(e -> {
+            String customerName = nameField.getText().trim();
+            String customerPhone = phoneField.getText().trim();
+            // Kiểm tra nhập tên và số điện thoại
+            if (customerName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập Họ Tên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                nameField.requestFocus();
+                return;
+            }
+            if (customerPhone.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập Số điện thoại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                phoneField.requestFocus();
+                return;
+            }
+            if (!customerPhone.matches("\\d{10,12}")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10 đến 12 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                phoneField.requestFocus();
+                return;
+            }
+            // Lấy số tiền cần thanh toán thực tế từ payLabel
+            int payAmount = 0;
+            try {
+                String payText = payLabel.getText().replace(" VND", "").replace(",", "").trim();
+                payAmount = Integer.parseInt(payText);
+            } catch (Exception ex) {
+                payAmount = totalAmount;
+            }
+            // Tính tổng tiền gốc = tiền ghế + tổng tiền combo
+            int tongTienAmount = totalAmount;
+            for (int i = 0; i < comboQuantities.length; i++) {
+                tongTienAmount += comboQuantities[i] * comboPrices[i];
+            }
+            if (selectedMethod[0] == 1) { // Chuyển khoản
+                new QRView(this, _movieName, _genre, _duration, _cinemaName, _showDate, _showTime, _selectedSeats, tongTienAmount, payAmount, customerName, customerPhone).setVisible(true);
+            } else {
+                // Hiện hóa đơn khi thanh toán tiền mặt, truyền đúng dữ liệu thực tế
+                new BillView(this, _movieName, _genre, _duration, _cinemaName, _showDate, _showTime, _selectedSeats, tongTienAmount, payAmount, "Tiền mặt", customerName, customerPhone).setVisible(true);
+            }
+        });
         btnPanel.add(nextBtn);
 
         // Add to left content panel
@@ -254,12 +317,11 @@ public class PaymentView extends JDialog {
         return p;
     }
 
-    private JPanel createInfoField(String label, String value) {
+    private JPanel createInfoField(String label, JTextField field) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         p.setBackground(Color.WHITE);
         JLabel l1 = new JLabel(label);
         l1.setFont(new Font("Arial", Font.BOLD, 14));
-        JTextField field = new JTextField(value, 15);
         field.setFont(new Font("Arial", Font.PLAIN, 14));
         field.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
         p.add(l1);
@@ -267,7 +329,7 @@ public class PaymentView extends JDialog {
         return p;
     }
 
-    private JPanel createComboRowV2(String name, String desc, int qty, String imgUrl, int price) {
+    private JPanel createComboRowV2(String name, String desc, int qty, String imgUrl, int price, int[] comboQuantities, int comboIndex) {
         JPanel row = new JPanel(new GridLayout(1, 4));
         row.setBackground(Color.WHITE);
         row.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -317,12 +379,14 @@ public class PaymentView extends JDialog {
         plus.addActionListener(e -> {
             int val = Integer.parseInt(qtyLabel.getText());
             qtyLabel.setText(String.valueOf(val + 1));
+            comboQuantities[comboIndex] = val + 1;
             updateTotal(price);
         });
         minus.addActionListener(e -> {
             int val = Integer.parseInt(qtyLabel.getText());
             if (val > 0) {
                 qtyLabel.setText(String.valueOf(val - 1));
+                comboQuantities[comboIndex] = val - 1;
                 updateTotal(-price);
             }
         });
