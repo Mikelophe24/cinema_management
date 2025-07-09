@@ -55,7 +55,8 @@ public class AdminDashboard extends JFrame {
 
         contentPanel.add(createPlaceholderPanel("🎞 Quản lý phim"), "movies");
         contentPanel.add(createPlaceholderPanel("🏢 Quản lý phòng"), "rooms");
-        contentPanel.add(createPlaceholderPanel("👤 Quản lý tài khoản"), "accounts");
+        contentPanel.add(new AccountManagement(), "accounts");
+
         contentPanel.add(createPlaceholderPanel("🧑‍💼 Quản lý nhân viên"), "staff");
         contentPanel.add(createPlaceholderPanel("🧍‍♂️ Quản lý khách hàng"), "customers");
         contentPanel.add(createPlaceholderPanel("🧾 Quản lý hóa đơn"), "invoices");
