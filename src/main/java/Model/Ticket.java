@@ -1,88 +1,109 @@
 package Model;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+
 public class Ticket {
+    private int ticketId;
+    private int accountId;
+    private int scheduleId;
+    private int seatCount;
+    private BigDecimal totalAmount;
+    private Date bookingDate;
+    private String status;
 
-    private int id;
-    private int userId;
-    private int movieId;
-    private String showtime;
-    private String seat;
-    private String movieTitle;
-    private User user;
-
-    // Constructor mặc định
-    public Ticket() {}
-
-    // Constructor để tạo vé khi đặt
-    public Ticket(int userId, int movieId, String showtime, String seat) {
-        this.userId = userId;
-        this.movieId = movieId;
-        this.showtime = showtime;
-        this.seat = seat;
+    public Ticket() {
     }
 
-    // Constructor đầy đủ dùng khi load từ DB (có cả ID)
-    public Ticket(int id, int userId, int movieId, String showtime, String seat) {
-        this.id = id;
-        this.userId = userId;
-        this.movieId = movieId;
-        this.showtime = showtime;
-        this.seat = seat;
+    public Ticket(int ticketId, int accountId, int scheduleId, int seatCount,
+                  BigDecimal totalAmount, Date bookingDate, String status) {
+        this.ticketId = ticketId;
+        this.accountId = accountId;
+        this.scheduleId = scheduleId;
+        this.seatCount = seatCount;
+        this.totalAmount = totalAmount;
+        this.bookingDate = bookingDate;
+        this.status = status;
     }
 
-    public int getId() {
-        return id;
+    // Constructor không có ticketId (dùng khi insert)
+    public Ticket(int accountId, int scheduleId, int seatCount,
+                  BigDecimal totalAmount, Date bookingDate, String status) {
+        this.accountId = accountId;
+        this.scheduleId = scheduleId;
+        this.seatCount = seatCount;
+        this.totalAmount = totalAmount;
+        this.bookingDate = bookingDate;
+        this.status = status;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    // Getters and Setters
+    public int getTicketId() {
+        return ticketId;
     }
 
-    public int getUserId() {
-        return userId;
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public int getAccountId() {
+        return accountId;
     }
 
-    public int getMovieId() {
-        return movieId;
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
+    public int getScheduleId() {
+        return scheduleId;
     }
 
-    public String getShowtime() {
-        return showtime;
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
-    public void setShowtime(String showtime) {
-        this.showtime = showtime;
+    public int getSeatCount() {
+        return seatCount;
     }
 
-    public String getSeat() {
-        return seat;
+    public void setSeatCount(int seatCount) {
+        this.seatCount = seatCount;
     }
 
-    public void setSeat(String seat) {
-        this.seat = seat;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
-    public String getMovieTitle() {
-        return movieTitle;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
+    public Date getBookingDate() {
+        return bookingDate;
     }
 
-    public User getUser() {
-        return user;
+    public void setBookingDate(Date bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId=" + ticketId +
+                ", accountId=" + accountId +
+                ", scheduleId=" + scheduleId +
+                ", seatCount=" + seatCount +
+                ", totalAmount=" + totalAmount +
+                ", bookingDate=" + bookingDate +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
