@@ -12,11 +12,9 @@ public class MappingDBData {
 
 	public static <T> T mapResultSetToObject(ResultSet rs, Class<T> classType) {
 		try {
-			System.out.println("Class type: " + classType);
 			T instance = classType.getDeclaredConstructor().newInstance();
 			ResultSetMetaData metaData = rs.getMetaData();
 			int columnCount = metaData.getColumnCount();
-			System.out.println("metaData: " + metaData);
 
 			for (int i = 1; i <= columnCount; i++) {
 				String column = metaData.getColumnLabel(i);

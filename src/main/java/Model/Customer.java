@@ -12,4 +12,5 @@ public class Customer extends User {
 			LocalDate birthday, int gender) {
 		super(id, accountId, fullName, email, phoneNumber, address, birthday, gender);
 	}
+
 }

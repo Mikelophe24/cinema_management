@@ -1,5 +1,6 @@
 package Dao;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.Map;
 import Enum.AccountEnum;
 import Helper.DatabaseExecutor;
 import Model.Account;
-import util.Bcrypt;
+import Model.Customer;
+import Model.Employee;
 
 public class AccountDao {
 	// SQL
@@ -27,33 +29,36 @@ public class AccountDao {
 		return account;
 	}
 
-	public static Account register(String username, String password, String displayName, String avatar, String role) {
+	public static Account register(String username, String password, String displayName, String avatar,
+			AccountEnum.Role role) {
 		boolean isExist = DatabaseExecutor.exists(SQL_CHECK_EXIST_BY_USERNAME, username);
 		if (isExist) {
 			throw new RuntimeException("Username has exist");
 		}
 
-		AccountEnum.Role accountRole = AccountEnum.Role.CUSTOMER;
-		if (AccountEnum.Role.isValidRole(role)) {
-			accountRole = AccountEnum.Role.fromValue(role);
-		} else {
+//		AccountEnum.Role accountRole = AccountEnum.Role.CUSTOMER;
+//		if (AccountEnum.Role.isValidRole(role)) {
+//			accountRole = AccountEnum.Role.fromValue(role);
+//		} else {
+//			throw new RuntimeException("Invalid Role");
+//		}
+		if (role == null || !AccountEnum.Role.isValidRole(role.getValue())) {
 			throw new RuntimeException("Invalid Role");
 		}
 
-		Account newAccount = new Account();
-		newAccount.setUsername(username);
-		newAccount.setPassword(Bcrypt.hash(password));
-		newAccount.setRole(accountRole);
-		newAccount.setStatus(AccountEnum.Status.ACTIVE);
-		newAccount.setDisplayName(displayName);
-		newAccount.setAvatar(null);
-
-		long rows = DatabaseExecutor.insert(SQL_CREATE_BY_ID, newAccount.getUsername(), newAccount.getPassword(),
-				newAccount.getRole().name(), newAccount.getStatus().name(), newAccount.getDisplayName(),
-				newAccount.getAvatar());
+		long rows = DatabaseExecutor.insert(SQL_CREATE_BY_ID, username, password, role.getValue(),
+				AccountEnum.Status.ACTIVE.getValue(), displayName, avatar);
 
 		if (rows > 0) {
-			return DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
+			Account acc = DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
+			if (role == AccountEnum.Role.CUSTOMER) {
+				UserDao<Customer> customerDao = new UserDao<>(role);
+				customerDao.create(acc.getAccountId(), null, null, null, null, null, 0, null);
+			} else if (role == AccountEnum.Role.EMPLOYEE) {
+				UserDao<Employee> employeeDao = new UserDao<>(role);
+				employeeDao.create(acc.getAccountId(), null, null, null, null, null, 0, LocalDate.now());
+			}
+			return acc;
 		}
 
 		return null;
@@ -121,8 +126,7 @@ public class AccountDao {
 	public static void main(String[] args) {
 		// Register
 //		try {
-//			Account account = AccountDao.register("test123", "123456", "Test User", null,
-//					AccountEnum.Role.CUSTOMER.getValue());
+//			Account account = AccountDao.register("test1", "123456", "Test User", null, AccountEnum.Role.CUSTOMER);
 //
 //			if (account != null) {
 //				System.out.println("Register OK: " + account.getUsername());
@@ -151,7 +155,7 @@ public class AccountDao {
 
 		// Delete
 //		try {
-//			accountDao.delete(4);
+//			AccountDao.delete(3);
 //			System.out.println("Delete OK");
 //		} catch (Exception e) {
 //			System.err.println("Delete Error: " + e.getMessage());

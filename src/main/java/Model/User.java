@@ -93,10 +93,10 @@ public class User {
 		this.gender = gender;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", accountId=" + accountId + ", fullName=" + fullName + ", email=" + email
-//				+ ", phoneNumber=" + phoneNumber + ", address=" + address + ", birthday=" + birthday + ", gender="
-//				+ gender + "]";
-//	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", accountId=" + accountId + ", fullName=" + fullName + ", email=" + email
+				+ ", phoneNumber=" + phoneNumber + ", address=" + address + ", birthday=" + birthday + ", gender="
+				+ gender + "]";
+	}
 }
