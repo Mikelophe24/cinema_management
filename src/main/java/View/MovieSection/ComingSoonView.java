@@ -2,6 +2,8 @@ package View.MovieSection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ComingSoonView extends JPanel {
     public ComingSoonView() {
@@ -147,30 +149,93 @@ public class ComingSoonView extends JPanel {
         buyBtn.setFocusPainted(false);
         buyBtn.setBounds(45, 415, 150, 30);
         buyBtn.addActionListener(e -> {
-            showBookingModal(movie.name);
+            showBookingModal(movie);
         });
         card.add(buyBtn);
 
         return card;
     }
 
-    private void showBookingModal(String movieName) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Đặt vé - " + movieName, true);
-        dialog.setSize(700, 550);
+    private void showBookingModal(MovieInfo movie) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Đặt Vé - " + movie.name, true);
+        dialog.setSize(500, 300);
         dialog.setLocationRelativeTo(null); // căn giữa màn hình
-        dialog.setLayout(new BorderLayout());
+        dialog.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel label = new JLabel("<html><h2>Đặt vé cho phim:</h2><br><b>" + movieName + "</b></html>", SwingConstants.CENTER);
-        dialog.add(label, BorderLayout.CENTER);
+        // Map tỉnh -> danh sách rạp
+        Map<String, String[]> rapMap = new HashMap<>();
+        rapMap.put("Hà Nội", new String[]{"Beta Thanh Xuân", "Beta Mỹ Đình", "Beta Đan Phượng"});
+        rapMap.put("TP. Hồ Chí Minh", new String[]{"Beta Quang Trung", "Beta Hồ Tràm"});
+        rapMap.put("Đồng Nai", new String[]{"Beta Biên Hòa", "Beta Long Khánh"});
+        rapMap.put("Khánh Hòa", new String[]{"Beta Nha Trang"});
+        rapMap.put("Thái Nguyên", new String[]{"Beta Thái Nguyên"});
 
-        JButton closeBtn = new JButton("Đóng");
-        closeBtn.addActionListener(ev -> dialog.dispose());
-        JPanel btnPanel = new JPanel();
-        btnPanel.add(closeBtn);
-        dialog.add(btnPanel, BorderLayout.SOUTH);
+        // Label chọn tỉnh
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        dialog.add(new JLabel("Chọn tỉnh:"), gbc);
 
-        dialog.setVisible(true);
-    }
+        // ComboBox tỉnh
+        String[] provinces = rapMap.keySet().toArray(new String[0]);
+        JComboBox<String> provinceCombo = new JComboBox<>(provinces);
+        gbc.gridx = 1;
+        dialog.add(provinceCombo, gbc);
+
+        // Label cụm rạp
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        dialog.add(new JLabel("Chọn rạp:"), gbc);
+
+        // ComboBox rạp
+        JComboBox<String> cinemaCombo = new JComboBox<>();
+        gbc.gridx = 1;
+        dialog.add(cinemaCombo, gbc);
+
+        // Cập nhật rạp ban đầu
+        String selectedProvince = (String) provinceCombo.getSelectedItem();
+        if (selectedProvince != null) {
+            for (String rap : rapMap.getOrDefault(selectedProvince, new String[]{})) {
+                cinemaCombo.addItem(rap);
+            }
+        }
+
+        // Sự kiện khi chọn tỉnh → cập nhật danh sách rạp
+        provinceCombo.addActionListener(e -> {
+            String province = (String) provinceCombo.getSelectedItem();
+            cinemaCombo.removeAllItems();
+            for (String rap : rapMap.getOrDefault(province, new String[]{})) {
+                cinemaCombo.addItem(rap);
+            }
+    });
+
+    // Nút xác nhận
+    JButton confirmBtn = new JButton("Tiếp tục");
+    confirmBtn.setBackground(new Color(33, 150, 243));
+    confirmBtn.setForeground(Color.WHITE);
+    confirmBtn.setFont(new Font("Arial", Font.BOLD, 14));
+    confirmBtn.setFocusPainted(false);
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.gridwidth = 2;
+    gbc.anchor = GridBagConstraints.CENTER;
+    dialog.add(confirmBtn, gbc);
+
+    confirmBtn.addActionListener(e -> {
+        String province = (String) provinceCombo.getSelectedItem();
+        String cinema = (String) cinemaCombo.getSelectedItem();
+        if (province != null && cinema != null) {
+            dialog.dispose();
+            // Hiển thị giao diện suất chiếu, truyền thêm ngày chiếu
+            new View.ModalView.ShowtimeDialog((Frame) SwingUtilities.getWindowAncestor(this), movie.name, cinema, movie.releaseDate).setVisible(true);
+        }
+    });
+
+    dialog.setVisible(true);
+}
+
 
     private static class MovieInfo {
         String imageUrl, name, genre, duration, releaseDate;
