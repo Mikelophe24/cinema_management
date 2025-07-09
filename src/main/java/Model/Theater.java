@@ -1,9 +1,11 @@
 package Model;
 
+import Enum.TheaterEnum;
+
 public class Theater {
 	private int id;
 	private String name;
-	private String status;
+	private TheaterEnum.Status status;
 	private int capacity;
 	private int seatCount;
 	private String description;
@@ -12,7 +14,7 @@ public class Theater {
 	protected Theater() {
 	}
 
-	protected Theater(int id, String name, String status, int capacity, int seatCount, String description,
+	protected Theater(int id, String name, TheaterEnum.Status status, int capacity, int seatCount, String description,
 			String image) {
 		this.id = id;
 		this.name = name;
@@ -39,11 +41,11 @@ public class Theater {
 		this.name = name;
 	}
 
-	public String getStatus() {
+	public TheaterEnum.Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(TheaterEnum.Status status) {
 		this.status = status;
 	}
 
