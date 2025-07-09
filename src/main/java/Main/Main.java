@@ -2,10 +2,11 @@ package Main;
 
 import javax.swing.SwingUtilities;
 
-import View.LoginView;
+import View.HomeUseView;
+//import View.LoginView;
 
 public class Main {
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new LoginView().setVisible(true));
+		SwingUtilities.invokeLater(() -> new HomeUseView().setVisible(true));
 	}
 }
