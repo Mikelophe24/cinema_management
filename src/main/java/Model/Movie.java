@@ -3,10 +3,10 @@ package Model;
 import java.time.LocalDateTime;
 
 public class Movie {
-	private int id;
+	private int id = 0;
 	private String title;
 	private String country;
-	private String releaseYear;
+	private int releaseYear;
 	private int duration;
 	private String director;
 	private String description;
@@ -19,10 +19,9 @@ public class Movie {
 	public Movie() {
 	}
 
-	public Movie(int id, String title, String country, String releaseYear, int duration, String director,
+	public Movie(int id, String title, String country, int releaseYear, int duration, String director,
 			String description, String poster, Double rating, int voteCount, LocalDateTime createdAt,
 			LocalDateTime updatedAt) {
-		super();
 		this.id = id;
 		this.title = title;
 		this.country = country;
@@ -61,11 +60,11 @@ public class Movie {
 		this.country = country;
 	}
 
-	public String getReleaseYear() {
+	public int getReleaseYear() {
 		return releaseYear;
 	}
 
-	public void setReleaseYear(String releaseYear) {
+	public void setReleaseYear(int releaseYear) {
 		this.releaseYear = releaseYear;
 	}
 

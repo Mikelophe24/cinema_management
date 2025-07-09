@@ -12,7 +12,7 @@ public class MovieGenreDao {
 	// Common SQL
 	private static final String SQL_CREATE = "INSERT INTO genres(name, description) VALUES (?, ?)";
 	private static final String SQL_CHECK_UNIQUE_NAME = "SELECT 1 FROM genres WHERE name = ?";
-	private static final String SQL_QUERY_ONE = "SELECT * FROM genres WHERE id = ?";
+	static final String SQL_QUERY_ONE = "SELECT * FROM genres WHERE id = ?";
 	private static final String SQL_QUERY_LIST = "SELECT * FROM genres";
 	private static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM genres WHERE id = ?";
 	private static final String SQL_DELETE_BY_ACCOUNT_ID = "DELETE FROM genres WHERE id = ?";
@@ -36,7 +36,11 @@ public class MovieGenreDao {
 		return null;
 	}
 
-	public static List<MovieGenre> getAll() {
+	public static MovieGenre queryOne(int id) {
+		return DatabaseExecutor.queryOne(SQL_QUERY_ONE, MovieGenre.class, id);
+	}
+
+	public static List<MovieGenre> queryList() {
 		return DatabaseExecutor.queryList(SQL_QUERY_LIST, MovieGenre.class);
 	}
 
@@ -94,11 +98,11 @@ public class MovieGenreDao {
 	public static void main(String[] args) {
 		try {
 //			 Create 
-//			MovieGenre gerne = MovieGenreDao.create("Comedy", "Phim hài hước, gây cười");
-//			System.out.println("Created: " + gerne);
+			MovieGenre gerne = MovieGenreDao.create("Comedy1", "Phim hài hước, gây cười");
+			System.out.println("Created: " + gerne);
 
 			// Get All Customers
-			List<MovieGenre> genres = MovieGenreDao.getAll();
+			List<MovieGenre> genres = MovieGenreDao.queryList();
 			System.out.println("All: " + genres);
 
 			// Update
@@ -114,12 +118,12 @@ public class MovieGenreDao {
 //			}
 
 			// Delete
-			boolean deleted = MovieGenreDao.delete(1);
-			if (deleted) {
-				System.out.println("Delete OK");
-			} else {
-				System.out.println("Delete failed");
-			}
+//			boolean deleted = MovieGenreDao.delete(1);
+//			if (deleted) {
+//				System.out.println("Delete OK");
+//			} else {
+//				System.out.println("Delete failed");
+//			}
 
 		} catch (Exception e) {
 			System.err.println("UserDao Error: " + e.getMessage());

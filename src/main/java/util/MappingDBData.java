@@ -2,6 +2,7 @@ package util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
@@ -25,7 +26,6 @@ public class MappingDBData {
 
 				try {
 					String fieldName = toCamelCase(column);
-//					Field field = classType.getDeclaredField(fieldName);
 					Field field = getField(classType, fieldName);
 					field.setAccessible(true);
 					Class<?> fieldType = field.getType();
@@ -40,11 +40,22 @@ public class MappingDBData {
 						field.set(instance, ((java.sql.Date) value).toLocalDate());
 					} else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
 						field.set(instance, Boolean.parseBoolean(value.toString()));
+					} else if (fieldType.equals(Double.class) && value instanceof BigDecimal) {
+						field.set(instance, ((BigDecimal) value).doubleValue());
+					} else if (fieldType.equals(Float.class) && value instanceof BigDecimal) {
+						field.set(instance, ((BigDecimal) value).floatValue());
+					} else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
+						if (value instanceof Number) {
+							field.set(instance, ((Number) value).intValue());
+						}
+					} else if (fieldType.equals(Long.class) || fieldType.equals(long.class)) {
+						if (value instanceof Number) {
+							field.set(instance, ((Number) value).longValue());
+						}
 					} else {
 						field.set(instance, value);
 					}
 				} catch (NoSuchFieldException ignored) {
-					//
 				}
 			}
 			return instance;
@@ -80,5 +91,4 @@ public class MappingDBData {
 		}
 		throw new NoSuchFieldException("Field '" + fieldName + "' not found in class hierarchy.");
 	}
-
 }
