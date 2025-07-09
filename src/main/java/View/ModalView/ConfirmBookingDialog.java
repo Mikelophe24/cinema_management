@@ -4,8 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ConfirmBookingDialog extends JDialog {
-    public ConfirmBookingDialog(Frame owner, String movieName, String cinemaName, String showDate, String showTime) {
+    private String genre;
+    private String duration;
+    private String imageUrl;
+
+    public ConfirmBookingDialog(Frame owner, String movieName, String cinemaName, String showDate, String showTime, String genre, String duration, String imageUrl) {
         super(owner, "Xác nhận đặt vé", true);
+        this.genre = genre;
+        this.duration = duration;
+        this.imageUrl = imageUrl;
         setSize(700, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -99,7 +106,10 @@ public class ConfirmBookingDialog extends JDialog {
         agreeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         agreeBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         agreeBtn.setPreferredSize(new Dimension(160, 40));
-        agreeBtn.addActionListener(e -> dispose());
+        agreeBtn.addActionListener(e -> {
+            dispose();
+            new View.SeatSelectionView(movieName, cinemaName, showDate, showTime, genre, duration, imageUrl).setVisible(true);
+        });
         JPanel btnPanel = new JPanel();
         btnPanel.setBackground(Color.WHITE);
         btnPanel.add(agreeBtn);

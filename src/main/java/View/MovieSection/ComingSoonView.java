@@ -228,8 +228,16 @@ public class ComingSoonView extends JPanel {
         String cinema = (String) cinemaCombo.getSelectedItem();
         if (province != null && cinema != null) {
             dialog.dispose();
-            // Hiển thị giao diện suất chiếu, truyền thêm ngày chiếu
-            new View.ModalView.ShowtimeDialog((Frame) SwingUtilities.getWindowAncestor(this), movie.name, cinema, movie.releaseDate).setVisible(true);
+            // Truyền đủ tham số cho ShowtimeDialog
+            new View.ModalView.ShowtimeDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                movie.name,
+                cinema,
+                movie.releaseDate,
+                movie.genre,
+                movie.duration,
+                movie.imageUrl
+            ).setVisible(true);
         }
     });
 

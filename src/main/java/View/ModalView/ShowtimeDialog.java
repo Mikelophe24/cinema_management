@@ -8,17 +8,23 @@ public class ShowtimeDialog extends JDialog {
     private String cinemaName;
     private String showDate;
     private JPanel showtimePanel;
+    private String genre;
+    private String duration;
+    private String imageUrl;
 
     // Dữ liệu mẫu cho suất chiếu
     private static final String[][] SAMPLE_SHOWTIMES = {
         {"17:15", "120"}, {"19:15", "131"}, {"20:45", "61"}, {"22:00", "115"}, {"23:00", "90"}
     };
 
-    public ShowtimeDialog(Frame owner, String movieName, String cinemaName, String showDate) {
+    public ShowtimeDialog(Frame owner, String movieName, String cinemaName, String showDate, String genre, String duration, String imageUrl) {
         super(owner, "LỊCH CHIẾU - " + movieName, true);
         this.movieName = movieName;
         this.cinemaName = cinemaName;
         this.showDate = showDate;
+        this.genre = genre;
+        this.duration = duration;
+        this.imageUrl = imageUrl;
         setSize(900, 480);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -112,7 +118,10 @@ public class ShowtimeDialog extends JDialog {
                     movieName,
                     cinemaName,
                     showDate,
-                    time
+                    time,
+                    genre,
+                    duration,
+                    imageUrl
                 ).setVisible(true);
             });
             showtimePanel.add(btn);

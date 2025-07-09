@@ -229,8 +229,8 @@ public class NowShowingView extends JPanel {
             String cinema = (String) cinemaCombo.getSelectedItem();
             if (province != null && cinema != null) {
                 dialog.dispose();
-                // Truyền ngày khởi chiếu vào ShowtimeDialogs
-                new View.ModalViewNowShowing.ShowtimeDialogs((Frame) SwingUtilities.getWindowAncestor(this), movie.name, cinema, movie.date).setVisible(true);
+                // Truyền ngày khởi chiếu, thể loại, thời lượng, imageUrl vào ShowtimeDialogs
+                new View.ModalViewNowShowing.ShowtimeDialogs((Frame) SwingUtilities.getWindowAncestor(this), movie.name, cinema, movie.date, movie.genre, movie.duration, movie.imageUrl).setVisible(true);
             }
         });
 
