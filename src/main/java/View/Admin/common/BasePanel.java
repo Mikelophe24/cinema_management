@@ -108,6 +108,10 @@ public abstract class BasePanel extends JPanel {
 		add(bottomPanel, BorderLayout.SOUTH);
 	}
 
+	protected void loadDataFromDatabase() {
+		// Mặc định: không làm gì cả
+	}
+
 	protected void setupListeners() {
 		if (buttonPanel != null) {
 			table.getSelectionModel().addListSelectionListener(e -> {
@@ -150,17 +154,11 @@ public abstract class BasePanel extends JPanel {
 					int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa bản ghi này?",
 							"Xác nhận xóa", JOptionPane.YES_NO_OPTION);
 					if (confirm == JOptionPane.YES_OPTION) {
-						tableModel.removeRow(selectedRow);
-						clearForm();
-						buttonPanel.getBtnEdit().setEnabled(false);
-						buttonPanel.getBtnDelete().setEnabled(false);
-						buttonPanel.getBtnAdd().setVisible(true);
-						for (JButton btn : buttonPanel.getSpecialButtons()) {
-							btn.setEnabled(false);
-						}
+						handleDelete(selectedRow); // ✅ Gọi hàm xử lý xóa thực tế
 					}
 				}
 			});
+
 
 			buttonPanel.getBtnAdd().addActionListener(e -> {
 				handleAdd();
@@ -174,6 +172,8 @@ public abstract class BasePanel extends JPanel {
 
 	// Abstracts
 	protected abstract void createComponents();
+	protected abstract void handleDelete(int selectedRow);
+
 
 	protected abstract void addSampleData();
 

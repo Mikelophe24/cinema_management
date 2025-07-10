@@ -32,6 +32,12 @@ public class FormPanel extends JPanel {
 		this(title, fieldLabels, defaultTypes(fieldLabels.length), comboLabels, comboOptions);
 	}
 
+
+	// Constructor rút gọn: cho employee
+	public FormPanel(String title, String[] fieldLabels) {
+		this(title, fieldLabels, new String[] {}, new String[][] {});
+	}
+
 	// Constructor mới
 	public FormPanel(String title, String[] fieldLabels, String[] fieldTypes, String[] comboLabels,
 			String[][] comboOptions) {
