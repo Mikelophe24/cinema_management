@@ -219,12 +219,54 @@ public class MovieDao {
 	public static void main(String[] args) {
 		try {
 			// Create
-//			Movie movie = new Movie(0, "Inception", "USA", 2010, 148, "Christopher Nolan",
+			// Inception
+//			Movie inception = new Movie(0, "Inception", "USA", 2010, 148, "Christopher Nolan",
 //					"A thief who enters the dreams of others to steal secrets.", "https://example.com/inception.jpg",
 //					8.8, 2000000, null, null);
+//			MovieWithGenres inceptionCreated = MovieDao.create(inception, new int[] { 8, 9 }); // Sci-Fi, Fantasy
 //
-//			MovieWithGenres movieWithGenreCreated = MovieDao.create(movie, new int[] { 2, 3 });
+//			// Titanic
+//			Movie titanic = new Movie(0, "Titanic", "USA", 1997, 195, "James Cameron",
+//					"A love story on the ill-fated Titanic ship.", "https://example.com/titanic.jpg", 7.8, 1500000,
+//					null, null);
+//			MovieWithGenres titanicCreated = MovieDao.create(titanic, new int[] { 10, 6 }); // Romance, Drama
 //
+//			// The Conjuring
+//			Movie conjuring = new Movie(0, "The Conjuring", "USA", 2013, 112, "James Wan",
+//					"Paranormal investigators help a family terrorized by dark forces.",
+//					"https://example.com/conjuring.jpg", 7.5, 800000, null, null);
+//			MovieWithGenres conjuringCreated = MovieDao.create(conjuring, new int[] { 7, 11 }); // Horror, Thriller
+//
+//			// The Lion King
+//			Movie lionKing = new Movie(0, "The Lion King", "USA", 1994, 88, "Roger Allers, Rob Minkoff",
+//					"A lion cub prince flees after the death of his father.", "https://example.com/lionking.jpg", 8.5,
+//					1000000, null, null);
+//			MovieWithGenres lionKingCreated = MovieDao.create(lionKing, new int[] { 12, 9 }); // Anime, Fantasy
+//
+//			// Avatar
+//			Movie avatar = new Movie(0, "Avatar", "USA", 2009, 162, "James Cameron",
+//					"A marine on an alien planet becomes torn between following orders and protecting the world he feels is his home.",
+//					"https://example.com/avatar.jpg", 7.9, 1300000, null, null);
+//			MovieWithGenres avatarCreated = MovieDao.create(avatar, new int[] { 8, 9 }); // Sci-Fi, Fantasy
+//
+//			// The Godfather
+//			Movie godfather = new Movie(0, "The Godfather", "USA", 1972, 175, "Francis Ford Coppola",
+//					"The aging patriarch of an organized crime dynasty transfers control to his reluctant son.",
+//					"https://example.com/godfather.jpg", 9.2, 1700000, null, null);
+//			MovieWithGenres godfatherCreated = MovieDao.create(godfather, new int[] { 6 }); // Drama
+//
+//			// Interstellar
+//			Movie interstellar = new Movie(0, "Interstellar", "USA", 2014, 169, "Christopher Nolan",
+//					"A team travels through a wormhole in space in an attempt to ensure humanity's survival.",
+//					"https://example.com/interstellar.jpg", 8.6, 1400000, null, null);
+//			MovieWithGenres interstellarCreated = MovieDao.create(interstellar, new int[] { 8, 9 }); // Sci-Fi, Fantasy
+
+			// The Dark Knight
+			Movie darkKnight = new Movie(0, "The Dark Knight", "USA", 2008, 152, "Christopher Nolan",
+					"Batman faces the Joker, a criminal mastermind who plunges Gotham into chaos.",
+					"https://example.com/darkknight.jpg", 9.0, 2200000, null, null);
+			MovieWithGenres darkKnightCreated = MovieDao.create(darkKnight, new int[] { 4, 11 }); // Action, Thriller
+
 //			System.out.println("Created movie: " + movieWithGenreCreated.getMovie().getTitle());
 //			System.out.println("Genres:");
 //			for (MovieGenre genre : movieWithGenreCreated.getGenres()) {
@@ -234,9 +276,6 @@ public class MovieDao {
 			// Query one
 //			MovieWithGenres movieWithGenre = MovieDao.queryOne(2);
 //			System.out.println("Qeury one: " + movieWithGenre);
-
-			// Query list
-//			MovieDao.queryList();
 
 			// Update
 //			Map<String, Object> updates = new HashMap<>();
@@ -248,9 +287,12 @@ public class MovieDao {
 //
 //			System.out.println(result ? "Update OK" : "Update Failed");
 
-			// Delete
-			boolean resDeleted = MovieDao.delete(7);
-			System.out.println(resDeleted ? "Delete OK" : "Delete Failed");
+//			// Delete
+//			boolean resDeleted = MovieDao.delete(7);
+//			System.out.println(resDeleted ? "Delete OK" : "Delete Failed");
+
+			// Query list
+//			MovieDao.queryList();
 
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());

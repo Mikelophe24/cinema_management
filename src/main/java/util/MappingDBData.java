@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class MappingDBData {
 
@@ -38,6 +39,8 @@ public class MappingDBData {
 						field.set(instance, ((Timestamp) value).toLocalDateTime());
 					} else if (fieldType.equals(LocalDate.class) && value instanceof java.sql.Date) {
 						field.set(instance, ((java.sql.Date) value).toLocalDate());
+					} else if (fieldType.equals(LocalTime.class) && value instanceof java.sql.Time) {
+						field.set(instance, ((java.sql.Time) value).toLocalTime());
 					} else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
 						field.set(instance, Boolean.parseBoolean(value.toString()));
 					} else if (fieldType.equals(Double.class) && value instanceof BigDecimal) {

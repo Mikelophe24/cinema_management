@@ -98,12 +98,8 @@ public class MovieGenreDao {
 	public static void main(String[] args) {
 		try {
 //			 Create 
-			MovieGenre gerne = MovieGenreDao.create("Comedy1", "Phim hài hước, gây cười");
+			MovieGenre gerne = MovieGenreDao.create("Comedy", "Phim hài hước, gây cười");
 			System.out.println("Created: " + gerne);
-
-			// Get All Customers
-			List<MovieGenre> genres = MovieGenreDao.queryList();
-			System.out.println("All: " + genres);
 
 			// Update
 //			Map<String, Object> updateFields = new HashMap<>();
@@ -124,6 +120,10 @@ public class MovieGenreDao {
 //			} else {
 //				System.out.println("Delete failed");
 //			}
+
+			// Get All Customers
+			List<MovieGenre> genres = MovieGenreDao.queryList();
+			System.out.println("All: " + genres);
 
 		} catch (Exception e) {
 			System.err.println("UserDao Error: " + e.getMessage());

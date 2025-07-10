@@ -14,6 +14,7 @@ public class SeatDao {
 	static final String SQL_QUERY_LIST = "SELECT * FROM seats";
 	static final String SQL_QUERY_LIST_BY_THEATER_ID = "SELECT * FROM seats WHERE theater_id = ?";
 	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM seats WHERE id = ?";
+	static final String SQL_CHECK_EXIST_IN_THEATER = "SELECT 1 FROM seats WHERE name = ? and theater_id = ?";
 	static final String SQL_CHECK_EXIST_BY_THEATER_ID = "SELECT 1 FROM seats WHERE theater_id = ?";
 	private static final String SQL_DELETE_BY_THEATER_ID = "DELETE FROM seats WHERE theater_id = ?";
 
@@ -22,7 +23,7 @@ public class SeatDao {
 
 	public static Seat create(Seat seat) {
 
-		boolean isExistSeat = DatabaseExecutor.exists(SQL_CHECK_UNIQUE_NAME, seat.getName());
+		boolean isExistSeat = DatabaseExecutor.exists(SQL_CHECK_EXIST_IN_THEATER, seat.getName(), seat.getTheaterId());
 		if (isExistSeat) {
 			throw new RuntimeException("Seat has exist");
 		}

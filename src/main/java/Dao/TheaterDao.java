@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import Enum.TheaterEnum;
 import Helper.DatabaseExecutor;
 import Model.Seat;
 import Model.Theater;
@@ -181,8 +182,8 @@ public class TheaterDao {
 	public static void main(String[] args) {
 		try {
 //			 Create 
-//			Theater theater = TheaterDao.create(new Theater("P03", TheaterEnum.Status.ACTIVE, 154, 149, null, null));
-//			System.out.println("Created: " + theater);
+			Theater theater = TheaterDao.create(new Theater("P02", TheaterEnum.Status.ACTIVE, 65, 60, null, null));
+			System.out.println("Created: " + theater);
 
 			// Update
 //			Map<String, Object> updateFields = new HashMap<>();
@@ -212,7 +213,7 @@ public class TheaterDao {
 			System.out.println("All: " + theaterWithSeats);
 
 		} catch (Exception e) {
-			System.err.println("UserDao Error: " + e.getMessage());
+			System.err.println("Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
