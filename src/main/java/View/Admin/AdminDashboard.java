@@ -17,12 +17,16 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import View.Admin.panels.AccountsPanel;
 //import View.Admin.panels.AccountsPanel;
 import View.Admin.panels.CustomersPanel;
+import View.Admin.panels.InvoicesPanel;
+import View.Admin.panels.MoviesPanel;
 //import View.Admin.panels.InvoicesPanel;
 //// Import các panel classes
 //import View.Admin.panels.MoviesPanel;
 import View.Admin.panels.RoomsPanel;
+import View.Admin.panels.SchedulePanel;
 //import View.Admin.panels.SchedulePanel;
 import View.Admin.panels.StaffPanel;
 
@@ -82,6 +86,10 @@ public class AdminDashboard extends JFrame {
 		contentPanel.add(new RoomsPanel(), "rooms");
 		contentPanel.add(new CustomersPanel(), "customers");
 		contentPanel.add(new StaffPanel(), "staff"); // ✅ THÊM DÒNG NÀY
+		contentPanel.add(new SchedulePanel(), "schedule");
+		contentPanel.add(new AccountsPanel(), "accounts");
+		contentPanel.add(new InvoicesPanel(), "stinvoicesaff");
+		contentPanel.add(new MoviesPanel(), "movies");
 		add(contentPanel);
 
 		// Mặc định hiển thị trang phim và active menu phim
