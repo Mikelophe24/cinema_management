@@ -5,10 +5,20 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// Import các panel classes
+import View.Admin.panels.MoviesPanel;
+import View.Admin.panels.RoomsPanel;
+import View.Admin.panels.AccountsPanel;
+import View.Admin.panels.StaffPanel;
+import View.Admin.panels.CustomersPanel;
+import View.Admin.panels.InvoicesPanel;
+import View.Admin.panels.SchedulePanel;
+
 public class AdminDashboard extends JFrame {
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
+    private JMenu selectedMenu = null;
 
     public AdminDashboard() {
         setTitle("🎬 Cinema Admin Dashboard");
@@ -33,19 +43,23 @@ public class AdminDashboard extends JFrame {
         menuBar.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         menuBar.setBackground(Color.WHITE);
 
-        JMenu menuMovie = createMenu("Quản lý phim");
-        JMenu menuRoom = createMenu("Quản lý phòng");
-        JMenu menuAccount = createMenu("Tài khoản");
-        JMenu menuStaff = createMenu("Nhân viên");
-        JMenu menuCustomer = createMenu("️Khách hàng");
-        JMenu menuInvoice = createMenu("Hóa đơn");
+        JMenu menuMovie = createMenu("Quản lý phim", "movies");
+        JMenu menuRoom = createMenu("Quản lý phòng", "rooms");
+        JMenu menuSchedule = createMenu("Quản lý lịch", "schedule");
+        JMenu menuAccount = createMenu("Tài khoản", "accounts");
+        JMenu menuStaff = createMenu("Nhân viên", "staff");
+        JMenu menuCustomer = createMenu("️Khách hàng", "customers");
+        JMenu menuInvoice = createMenu("Hóa đơn", "invoices");
 
+        // Đảm bảo không lặp menu, đúng thứ tự
         menuBar.add(menuMovie);
         menuBar.add(menuRoom);
+        menuBar.add(menuSchedule);
         menuBar.add(menuAccount);
         menuBar.add(menuStaff);
         menuBar.add(menuCustomer);
         menuBar.add(menuInvoice);
+
         setJMenuBar(menuBar);
 
         // Content Panel - không gradient
@@ -59,34 +73,47 @@ public class AdminDashboard extends JFrame {
         contentPanel.add(new StaffPanel(), "staff");
         contentPanel.add(new CustomersPanel(), "customers");
         contentPanel.add(new InvoicesPanel(), "invoices");
+        contentPanel.add(new SchedulePanel(), "schedule");
 
         add(contentPanel);
 
-        // Actions
-        menuMovie.addMouseListener(new MenuClick("movies"));
-        menuRoom.addMouseListener(new MenuClick("rooms"));
-        menuAccount.addMouseListener(new MenuClick("accounts"));
-        menuStaff.addMouseListener(new MenuClick("staff"));
-        menuCustomer.addMouseListener(new MenuClick("customers"));
-        menuInvoice.addMouseListener(new MenuClick("invoices"));
+        // Mặc định hiển thị trang phim và active menu phim
+        cardLayout.show(contentPanel, "movies");
+        setMenuActive(menuMovie);
     }
 
-    private JMenu createMenu(String text) {
+    private JMenu createMenu(String text, String panelName) {
         JMenu menu = new JMenu(text);
         menu.setForeground(new Color(60, 60, 60));
         menu.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        
+        // Chỉ thêm hiệu ứng click
         menu.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                menu.setForeground(new Color(0, 123, 255));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                menu.setForeground(new Color(60, 60, 60));
+            public void mouseClicked(MouseEvent e) {
+                // Chuyển trang và cập nhật trạng thái menu
+                cardLayout.show(contentPanel, panelName);
+                setMenuActive(menu);
             }
         });
+        
         return menu;
+    }
+
+    private void setMenuActive(JMenu activeMenu) {
+        // Reset tất cả menu về trạng thái bình thường
+        for (Component comp : getJMenuBar().getComponents()) {
+            if (comp instanceof JMenu) {
+                JMenu menu = (JMenu) comp;
+                menu.setForeground(new Color(60, 60, 60));
+            }
+        }
+        
+        // Set menu được chọn thành màu active
+        if (activeMenu != null) {
+            activeMenu.setForeground(new Color(0, 123, 255));
+            selectedMenu = activeMenu;
+        }
     }
 
     private JPanel createPlaceholderPanel(String title) {
@@ -97,19 +124,6 @@ public class AdminDashboard extends JFrame {
         label.setForeground(new Color(30, 144, 255));
         panel.add(label);
         return panel;
-    }
-
-    private class MenuClick extends MouseAdapter {
-        private final String panelName;
-
-        public MenuClick(String panelName) {
-            this.panelName = panelName;
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            cardLayout.show(contentPanel, panelName);
-        }
     }
 
     public static void main(String[] args) {
