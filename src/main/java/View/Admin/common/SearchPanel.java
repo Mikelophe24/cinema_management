@@ -20,23 +20,8 @@ public class SearchPanel extends JPanel {
      * Constructor: Chỉ có các TextField (không có comboBox)
      */
     public SearchPanel(String[] fieldLabels) {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
-        setBackground(new Color(245, 248, 255));
-
-        searchFields = new JTextField[fieldLabels.length];
-        for (int i = 0; i < fieldLabels.length; i++) {
-            add(new JLabel(fieldLabels[i] + ":"));
-            searchFields[i] = new JTextField(12);
-            add(searchFields[i]);
-        }
-
-        comboBoxes = new JComboBox[0];  // Khởi tạo rỗng để tránh lỗi
-
-        // Nút tìm kiếm
-        searchButton = new JButton("Tìm kiếm");
-        searchButton.setBackground(new Color(200, 220, 255));
-        searchButton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        add(searchButton);
+        // Gọi constructor đầy đủ với comboBox rỗng
+        this(fieldLabels, new String[0], new String[0][0]);
     }
 
     /**
@@ -87,5 +72,10 @@ public class SearchPanel extends JPanel {
     /** Trả về nút tìm kiếm */
     public JButton getSearchButton() {
         return searchButton;
+    }
+
+    /** Trả về các comboBox (alias) */
+    public JComboBox<String>[] getSearchCombos() {
+        return comboBoxes;
     }
 }
