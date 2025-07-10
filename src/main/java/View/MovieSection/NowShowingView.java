@@ -9,7 +9,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -21,12 +24,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import View.MovieSection.ComingSoonView.MovieInfo;
+
 public class NowShowingView extends JPanel {
 	private static final long serialVersionUID = 3884301657752189949L;
-	private List<NowShowingMovieInfo> movies;
+	private List<MovieInfo> movies;
 	private JPanel listPanel;
 
-	public NowShowingView(List<NowShowingMovieInfo> movieList) {
+	public NowShowingView(List<MovieInfo> movieList) {
 		this.movies = movieList;
 		setBackground(Color.WHITE);
 		setLayout(new GridBagLayout());
@@ -34,7 +39,6 @@ public class NowShowingView extends JPanel {
 		gbc.insets = new Insets(10, 20, 10, 20);
 		gbc.gridy = 0;
 
-		// Panel chứa các hàng phim
 		listPanel = new JPanel();
 		listPanel.setBackground(Color.WHITE);
 		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
@@ -43,12 +47,11 @@ public class NowShowingView extends JPanel {
 		gbc.gridy = 0;
 		add(listPanel, gbc);
 
-		// Load & render phim
 		loadMovies(movieList);
 		renderMovies();
 	}
 
-	private void loadMovies(List<NowShowingMovieInfo> movieList) {
+	private void loadMovies(List<MovieInfo> movieList) {
 		this.movies = movieList;
 	}
 
@@ -71,20 +74,18 @@ public class NowShowingView extends JPanel {
 		listPanel.repaint();
 	}
 
-	private JPanel createMovieCard(NowShowingMovieInfo movie) {
+	private JPanel createMovieCard(MovieInfo movie) {
 		JPanel card = new JPanel();
 		card.setPreferredSize(new Dimension(240, 440));
 		card.setBackground(Color.WHITE);
 		card.setLayout(null);
 		card.setBorder(
 				BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
-						BorderFactory.createEmptyBorder(10, 10, 10, 10) // padding trong card
-				));
+						BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-		// Poster
 		JLabel poster = new JLabel();
 		try {
-			ImageIcon icon = new ImageIcon(new java.net.URL(movie.imageUrl));
+			ImageIcon icon = new ImageIcon(new URL(movie.imageUrl));
 			Image img = icon.getImage().getScaledInstance(220, 310, Image.SCALE_SMOOTH);
 			poster.setIcon(new ImageIcon(img));
 		} catch (Exception e) {
@@ -93,26 +94,22 @@ public class NowShowingView extends JPanel {
 		poster.setBounds(10, 10, 220, 310);
 		card.add(poster);
 
-		// Tên phim
 		JLabel name = new JLabel("<html><b>" + movie.name + "</b></html>");
 		name.setFont(new Font("Arial", Font.BOLD, 16));
 		name.setForeground(new Color(33, 150, 243));
 		name.setBounds(15, 330, 210, 22);
 		card.add(name);
 
-		// Thể loại
 		JLabel genre = new JLabel("<html><b>Thể loại:</b> " + movie.genre + "</html>");
 		genre.setFont(new Font("Arial", Font.PLAIN, 13));
 		genre.setBounds(15, 355, 210, 18);
 		card.add(genre);
 
-		// Thời lượng
 		JLabel duration = new JLabel("<html><b>Thời lượng:</b> " + movie.duration + "</html>");
 		duration.setFont(new Font("Arial", Font.PLAIN, 13));
 		duration.setBounds(15, 375, 210, 18);
 		card.add(duration);
 
-		// Nút mua vé
 		JButton buyBtn = new JButton("MUA VÉ");
 		buyBtn.setBackground(new Color(33, 150, 243));
 		buyBtn.setForeground(Color.WHITE);
@@ -123,48 +120,43 @@ public class NowShowingView extends JPanel {
 			showBookingModal(movie);
 		});
 		card.add(buyBtn);
+
 		return card;
 	}
 
-	private void showBookingModal(NowShowingMovieInfo movie) {
+	private void showBookingModal(MovieInfo movie) {
 		JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Đặt Vé - " + movie.name, true);
 		dialog.setSize(500, 300);
-		dialog.setLocationRelativeTo(null); // căn giữa màn hình
+		dialog.setLocationRelativeTo(null);
 		dialog.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(10, 10, 10, 10);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		// Map tỉnh -> danh sách rạp
-		java.util.Map<String, String[]> rapMap = new java.util.HashMap<>();
+		Map<String, String[]> rapMap = new HashMap<>();
 		rapMap.put("Hà Nội", new String[] { "Beta Thanh Xuân", "Beta Mỹ Đình", "Beta Đan Phượng" });
 		rapMap.put("TP. Hồ Chí Minh", new String[] { "Beta Quang Trung", "Beta Hồ Tràm" });
 		rapMap.put("Đồng Nai", new String[] { "Beta Biên Hòa", "Beta Long Khánh" });
 		rapMap.put("Khánh Hòa", new String[] { "Beta Nha Trang" });
 		rapMap.put("Thái Nguyên", new String[] { "Beta Thái Nguyên" });
 
-		// Label chọn tỉnh
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		dialog.add(new JLabel("Chọn tỉnh:"), gbc);
 
-		// ComboBox tỉnh
 		String[] provinces = rapMap.keySet().toArray(new String[0]);
 		JComboBox<String> provinceCombo = new JComboBox<>(provinces);
 		gbc.gridx = 1;
 		dialog.add(provinceCombo, gbc);
 
-		// Label cụm rạp
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		dialog.add(new JLabel("Chọn rạp:"), gbc);
 
-		// ComboBox rạp
 		JComboBox<String> cinemaCombo = new JComboBox<>();
 		gbc.gridx = 1;
 		dialog.add(cinemaCombo, gbc);
 
-		// Cập nhật rạp ban đầu
 		String selectedProvince = (String) provinceCombo.getSelectedItem();
 		if (selectedProvince != null) {
 			for (String rap : rapMap.getOrDefault(selectedProvince, new String[] {})) {
@@ -172,7 +164,6 @@ public class NowShowingView extends JPanel {
 			}
 		}
 
-		// Sự kiện khi chọn tỉnh → cập nhật danh sách rạp
 		provinceCombo.addActionListener(e -> {
 			String province = (String) provinceCombo.getSelectedItem();
 			cinemaCombo.removeAllItems();
@@ -181,7 +172,6 @@ public class NowShowingView extends JPanel {
 			}
 		});
 
-		// Nút xác nhận
 		JButton confirmBtn = new JButton("Tiếp tục");
 		confirmBtn.setBackground(new Color(33, 150, 243));
 		confirmBtn.setForeground(Color.WHITE);
@@ -198,9 +188,9 @@ public class NowShowingView extends JPanel {
 			String cinema = (String) cinemaCombo.getSelectedItem();
 			if (province != null && cinema != null) {
 				dialog.dispose();
-				// Truyền ngày khởi chiếu, thể loại, thời lượng, imageUrl vào ShowtimeDialogs
-				new View.ModalViewNowShowing.ShowtimeDialogs((Frame) SwingUtilities.getWindowAncestor(this), movie.name,
-						cinema, movie.date, movie.genre, movie.duration, movie.imageUrl).setVisible(true);
+				// Giống file 1: chỉ truyền nguyên movie
+				new View.ModalViewNowShowing.ShowtimeDialogs((Frame) SwingUtilities.getWindowAncestor(this), movie)
+						.setVisible(true);
 			}
 		});
 
@@ -208,14 +198,17 @@ public class NowShowingView extends JPanel {
 	}
 
 	public static class NowShowingMovieInfo {
-		String imageUrl, name, genre, duration, date;
+		public int id;
+		public String imageUrl, name, genre, duration, releaseDate;
 
-		public NowShowingMovieInfo(String imageUrl, String name, String genre, String duration, String date) {
+		public NowShowingMovieInfo(int id, String imageUrl, String name, String genre, String duration,
+				String releaseDate) {
+			this.id = id;
 			this.imageUrl = imageUrl;
 			this.name = name;
 			this.genre = genre;
 			this.duration = duration;
-			this.date = date;
+			this.releaseDate = releaseDate;
 		}
 	}
 }

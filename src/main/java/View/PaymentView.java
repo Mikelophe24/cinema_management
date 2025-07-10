@@ -44,7 +44,7 @@ import Model.Invoice;
 import Model.Product;
 import Model.Theater;
 import Model.Ticket;
-import View.MovieSection.ComingSoonView.ComingSoonMovieInfo;
+import View.MovieSection.ComingSoonView.MovieInfo;
 
 public class PaymentView extends JDialog {
 	private JLabel totalLabel;
@@ -52,7 +52,7 @@ public class PaymentView extends JDialog {
 	private JLabel payLabel;
 	private Double totalAmount;
 
-	public PaymentView(ComingSoonMovieInfo movie, Theater theater, String showTime, List<String> selectedSeats,
+	public PaymentView(MovieInfo movie, Theater theater, String showTime, List<String> selectedSeats,
 			Double totalAmount, int scheduleId, List<Integer> selectedSeatIds) {
 		super((Frame) null, "Thanh Toán", true);
 		this.totalAmount = totalAmount;

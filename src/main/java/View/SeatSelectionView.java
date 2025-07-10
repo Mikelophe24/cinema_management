@@ -36,7 +36,7 @@ import Enum.SeatScheduleEnum;
 import Model.Seat;
 import Model.SeatSchedule;
 import Model.Theater;
-import View.MovieSection.ComingSoonView.ComingSoonMovieInfo;
+import View.MovieSection.ComingSoonView.MovieInfo;
 
 public class SeatSelectionView extends JDialog {
 	private static final Color COLOR_AVAILABLE = new Color(220, 220, 220);
@@ -54,8 +54,7 @@ public class SeatSelectionView extends JDialog {
 	private int scheduleId;
 	private Double price;
 
-	public SeatSelectionView(ComingSoonMovieInfo movie, Theater theater, String showTime, int scheduleId,
-			Double price) {
+	public SeatSelectionView(MovieInfo movie, Theater theater, String showTime, int scheduleId, Double price) {
 		super((Frame) null, "Chọn ghế", true);
 		this.scheduleId = scheduleId;
 		this.price = price;

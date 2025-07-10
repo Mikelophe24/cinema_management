@@ -26,7 +26,7 @@ import Dao.MovieScheduleDao;
 import Dao.TheaterDao;
 import Model.MovieSchedule;
 import Model.Theater;
-import View.MovieSection.ComingSoonView.ComingSoonMovieInfo;
+import View.MovieSection.ComingSoonView.MovieInfo;
 
 public class ShowtimeDialog extends JDialog {
 	private String movieName;
@@ -36,7 +36,7 @@ public class ShowtimeDialog extends JDialog {
 	private String genre;
 	private String duration;
 	private String imageUrl;
-	private ComingSoonMovieInfo movie;
+	private MovieInfo movie;
 
 	// Dữ liệu mẫu cho suất chiếu
 	private static String[][] showtime = { { "17:15", "120" }, { "19:15", "131" }, { "20:45", "61" },
@@ -44,7 +44,7 @@ public class ShowtimeDialog extends JDialog {
 
 	private static List<MovieSchedule> schedules = new ArrayList<MovieSchedule>(0);
 
-	public ShowtimeDialog(Frame owner, ComingSoonMovieInfo movie) {
+	public ShowtimeDialog(Frame owner, MovieInfo movie) {
 		super(owner, "LỊCH CHIẾU - " + movie.name, true);
 		this.movie = movie;
 		this.movieName = movie.name;
