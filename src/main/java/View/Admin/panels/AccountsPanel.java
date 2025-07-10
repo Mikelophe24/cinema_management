@@ -2,6 +2,10 @@ package View.Admin.panels;
 
 import java.util.HashMap;
 import java.util.Map;
+import Dao.AccountDao;
+import Model.Account;
+import Enum.AccountEnum;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -12,110 +16,239 @@ import View.Admin.common.FormPanel;
 import View.Admin.common.SearchPanel;
 
 public class AccountsPanel extends BasePanel {
+    
+    public AccountsPanel() {
+        super("Quản lý tài khoản", "👤");
+    }
+    
+    @Override
+    protected void createComponents() {
+        // Tạo search panel
+        String[] fieldLabels = {"Tên đăng nhập"};
+        String[] comboLabels = {"Quyền", "Trạng thái"};
+        String[][] comboOptions = {
+            {"Tất cả", "Admin", "User", "Manager"},
+            {"Tất cả", "Active", "Inactive", "Suspended"}
+        };
+        
+        searchPanel = new SearchPanel(fieldLabels, comboLabels, comboOptions);
+        
+        // Tạo table
+        String[] columns = {
+            "ID", "Tên đăng nhập", "Mật khẩu", "Quyền", "Trạng thái", "Ngày tạo",
+            "Ngày kết thúc", "Tên người dùng", "Avatar"
+        };
+        table = createStyledTable(columns);
+        
+        
+        // Tạo form panel
+        String[] formFieldLabels = {
+            "ID", "Tên đăng nhập", "Mật khẩu", "Ngày tạo", "Ngày kết thúc", "Tên người dùng", "Avatar"
+        };
+        String[] formComboLabels = {"Quyền", "Trạng thái"};
+        String[][] formComboOptions = {
+            {"Admin", "User", "Manager"},
+            {"Active", "Inactive", "Suspended"}
+        };
+        formPanel = new FormPanel("Thông tin tài khoản", formFieldLabels, formComboLabels, formComboOptions);
+        
+        // Tạo button panel
+        buttonPanel = new ButtonPanel(new String[]{});
+    }
+    
+    @Override
+    protected void addSampleData() {
+        tableModel.setRowCount(0);
 
-	public AccountsPanel() {
-		super("Quản lý tài khoản", "👤");
-	}
+        List<Account> accounts = AccountDao.getAll();
+        for (Account acc : accounts) {
+            Object[] row = {
+                acc.getAccountId(),
+                acc.getUsername(),
+                acc.getPassword(),
+                acc.getRole() != null ? acc.getRole().getValue() : "",
+                acc.getStatus() != null ? acc.getStatus().getValue() : "",
+                acc.getCreatedAt() != null ? acc.getCreatedAt().toString() : "",
+                acc.getUpdatedAt() != null ? acc.getUpdatedAt().toString() : "",
+                acc.getDisplayName() != null ? acc.getDisplayName() : "",
+                acc.getAvatar() != null ? acc.getAvatar() : ""
+            };
+            tableModel.addRow(row);
+        }
+    }
+    
+    @Override
+    protected void displaySelectedRowData() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            formPanel.setTextFieldValue(0, table.getValueAt(selectedRow, 0).toString()); // ID
+            formPanel.setTextFieldValue(1, table.getValueAt(selectedRow, 1).toString()); // username
+            formPanel.setTextFieldValue(2, table.getValueAt(selectedRow, 2).toString()); // password
+            formPanel.setTextFieldValue(3, table.getValueAt(selectedRow, 5).toString()); // Ngày tạo
+            formPanel.setTextFieldValue(4, table.getValueAt(selectedRow, 6).toString()); // Ngày kết thúc
+            formPanel.setTextFieldValue(5, table.getValueAt(selectedRow, 7).toString()); // Tên người dùng
+            formPanel.setTextFieldValue(6, table.getValueAt(selectedRow, 8).toString()); // Avatar
+            formPanel.setComboBoxValue(0, table.getValueAt(selectedRow, 3).toString()); // Quyền
+            formPanel.setComboBoxValue(1, table.getValueAt(selectedRow, 4).toString()); // Trạng thái
+        }
+    }
+    
+    @Override
+    protected void clearForm() {
+        formPanel.clearForm();
+    }
+    
+    @Override
+    protected Map<String, String> getFormData() {
+        Map<String, String> data = new HashMap<>();
+        data.put("id", formPanel.getTextFieldValue(0));
+        data.put("username", formPanel.getTextFieldValue(1));
+        data.put("password", formPanel.getTextFieldValue(2));
+        data.put("createdAt", formPanel.getTextFieldValue(3));
+        data.put("updatedAt", formPanel.getTextFieldValue(4));
+        data.put("displayName", formPanel.getTextFieldValue(5));
+        data.put("avatar", formPanel.getTextFieldValue(6));
+        data.put("role", formPanel.getComboBoxValue(0));
+        data.put("status", formPanel.getComboBoxValue(1));
+        return data;
+    }
+    
+    @Override
+    protected void handleEdit(int selectedRow) {
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản để sửa!");
+            return;
+        }
+        Map<String, String> data = getFormData();
+        try {
+            int id = Integer.parseInt(data.get("id"));
+            Map<String, Object> updateFields = new HashMap<>();
+            // Cập nhật tất cả các trường cho phép
+            updateFields.put("password", data.get("password"));
+            updateFields.put("role", data.get("role"));
+            updateFields.put("status", data.get("status"));
+            updateFields.put("display_name", data.get("displayName"));
+            updateFields.put("avatar", data.get("avatar"));
+            updateFields.put("username", data.get("username"));
+            // Nếu muốn cập nhật thêm trường khác, cần sửa AccountDao cho phép
 
-	@Override
-	protected void createComponents() {
-		// Tạo search panel
-		String[] fieldLabels = { "Tên đăng nhập", "Email" };
-		String[] comboLabels = { "Quyền", "Trạng thái" };
-		String[][] comboOptions = { { "Tất cả", "Admin", "User", "Manager" },
-				{ "Tất cả", "Active", "Inactive", "Suspended" } };
+            boolean success = Dao.AccountDao.update(id, updateFields);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+                addSampleData(); // Làm mới bảng
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    protected void handleAdd() {
+        Map<String, String> data = getFormData();
+        // Kiểm tra dữ liệu bắt buộc
+        if (data.get("username").isEmpty() || data.get("password").isEmpty() ||
+            data.get("role").isEmpty() || data.get("status").isEmpty() ||
+            data.get("displayName").isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin tài khoản!");
+            return;
+        }
+        try {
+            // Lấy role và status đúng kiểu enum
+            AccountEnum.Role role = AccountEnum.Role.fromValue(data.get("role"));
+            AccountEnum.Status status = AccountEnum.Status.fromValue(data.get("status"));
+            // Gọi register
+            Account acc = AccountDao.register(
+                data.get("username"),
+                data.get("password"),
+                data.get("displayName"),
+                data.get("avatar"),
+                role
+            );
+            if (acc != null) {
+                // Sau khi thêm, cập nhật trạng thái nếu cần
+                if (!acc.getStatus().equals(status)) {
+                    java.util.HashMap<String, Object> updateFields = new java.util.HashMap<>();
+                    updateFields.put("status", status.getValue());
+                    AccountDao.update(acc.getAccountId(), updateFields);
+                }
+                JOptionPane.showMessageDialog(this, "Thêm tài khoản thành công!");
+                addSampleData();
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm tài khoản thất bại!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    protected void handleSearch() {
+        JTextField[] searchFields = searchPanel.getSearchFields();
+        JComboBox<String>[] searchCombos = searchPanel.getSearchCombos();
 
-		searchPanel = new SearchPanel(fieldLabels, comboLabels, comboOptions);
+        String username = searchFields[0].getText().trim();
+        String role = searchCombos[0].getSelectedItem().toString();
+        // Nếu có thêm combo trạng thái thì lấy searchCombos[1]
 
-		// Tạo table
-		String[] columns = { "ID", "Tên đăng nhập", "Email", "Quyền", "Trạng thái", "Ngày tạo" };
-		table = createStyledTable(columns);
+        // Xóa dữ liệu cũ trên bảng
+        tableModel.setRowCount(0);
 
-		// Tạo form panel
-		String[] formFieldLabels = { "Tên đăng nhập", "Email", "Mật khẩu" };
-		String[] formComboLabels = { "Quyền", "Trạng thái" };
-		String[][] formComboOptions = { { "Admin", "User", "Manager" }, { "Active", "Inactive", "Suspended" } };
+        // Lấy danh sách tài khoản từ DB
+        List<Account> accounts = AccountDao.getAll();
+        for (Account acc : accounts) {
+            boolean match = true;
+            // Lọc theo username bắt đầu bằng
+            if (!username.isEmpty() && !acc.getUsername().toLowerCase().startsWith(username.toLowerCase())) {
+                match = false;
+            }
+            // Lọc theo quyền
+            if (!role.equals("Tất cả") && (acc.getRole() == null || !acc.getRole().getValue().equals(role))) {
+                match = false;
+            }
+            if (match) {
+                Object[] row = {
+                    acc.getAccountId(),
+                    acc.getUsername(),
+                    acc.getPassword(),
+                    acc.getRole() != null ? acc.getRole().getValue() : "",
+                    acc.getStatus() != null ? acc.getStatus().getValue() : "",
+                    acc.getCreatedAt() != null ? acc.getCreatedAt().toString() : "",
+                    acc.getUpdatedAt() != null ? acc.getUpdatedAt().toString() : "",
+                    acc.getDisplayName() != null ? acc.getDisplayName() : "",
+                    acc.getAvatar() != null ? acc.getAvatar() : ""
+                };
+                tableModel.addRow(row);
+            }
+        }
+    }
 
-		formPanel = new FormPanel("Thông tin tài khoản", formFieldLabels, formComboLabels, formComboOptions);
-
-		// Tạo button panel
-		buttonPanel = new ButtonPanel(new String[] {});
-	}
-
-	@Override
-	protected void addSampleData() {
-		Object[][] sampleData = { { 1, "admin", "admin@cinema.com", "Admin", "Active", "2024-01-01" },
-				{ 2, "manager1", "manager1@cinema.com", "Manager", "Active", "2024-01-02" },
-				{ 3, "user1", "user1@cinema.com", "User", "Active", "2024-01-03" },
-				{ 4, "user2", "user2@cinema.com", "User", "Inactive", "2024-01-04" },
-				{ 5, "manager2", "manager2@cinema.com", "Manager", "Suspended", "2024-01-05" },
-				{ 6, "user3", "user3@cinema.com", "User", "Active", "2024-01-06" },
-				{ 7, "admin2", "admin2@cinema.com", "Admin", "Active", "2024-01-07" },
-				{ 8, "user4", "user4@cinema.com", "User", "Inactive", "2024-01-08" },
-				{ 9, "manager3", "manager3@cinema.com", "Manager", "Active", "2024-01-09" },
-				{ 10, "user5", "user5@cinema.com", "User", "Active", "2024-01-10" } };
-
-		for (Object[] row : sampleData) {
-			tableModel.addRow(row);
-		}
-	}
-
-	@Override
-	protected void displaySelectedRowData() {
-		int selectedRow = table.getSelectedRow();
-		if (selectedRow != -1) {
-			formPanel.setTextFieldValue(0, table.getValueAt(selectedRow, 1).toString());
-			formPanel.setTextFieldValue(1, table.getValueAt(selectedRow, 2).toString());
-			formPanel.setTextFieldValue(2, "********");
-			formPanel.setComboBoxValue(0, table.getValueAt(selectedRow, 3).toString());
-			formPanel.setComboBoxValue(1, table.getValueAt(selectedRow, 4).toString());
-		}
-	}
-
-	@Override
-	protected void clearForm() {
-		formPanel.clearForm();
-	}
-
-	@Override
-	protected Map<String, String> getFormData() {
-		Map<String, String> data = new HashMap<>();
-		data.put("username", formPanel.getTextFieldValue(0));
-		data.put("email", formPanel.getTextFieldValue(1));
-		data.put("password", formPanel.getTextFieldValue(2));
-		data.put("role", formPanel.getComboBoxValue(0));
-		data.put("status", formPanel.getComboBoxValue(1));
-		return data;
-	}
-
-	@Override
-	protected void handleEdit(int selectedRow) {
-		System.out.println("Sửa tài khoản ở hàng: " + selectedRow);
-		System.out.println("Dữ liệu form: " + getFormData());
-	}
-
-	@Override
-	protected void handleAdd() {
-		System.out.println("Thêm tài khoản mới");
-		System.out.println("Dữ liệu form: " + getFormData());
-	}
-
-	@Override
-	protected void handleSearch() {
-		JTextField[] searchFields = searchPanel.getSearchFields();
-		JComboBox<String>[] searchCombos = searchPanel.getSearchCombos();
-
-		String username = searchFields[0].getText().trim();
-		String email = searchFields[1].getText().trim();
-		String role = searchCombos[0].getSelectedItem().toString();
-		String status = searchCombos[1].getSelectedItem().toString();
-
-		System.out.println("Tìm kiếm: " + username + ", " + email + ", " + role + ", " + status);
-	}
-
-	@Override
-	protected void handleDelete(int selectedRow) {
-		// TODO Auto-generated method stub
-
-	}
-}
+    @Override
+    protected void handleDelete(int selectedRow) {
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản để xóa!");
+            return;
+        }
+        int id;
+        try {
+            id = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Không thể xác định ID tài khoản!");
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa tài khoản này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = Dao.AccountDao.delete(id);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Xóa tài khoản thành công!");
+                addSampleData(); // Làm mới bảng
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa tài khoản thất bại!");
+            }
+        }
+    }
+} 

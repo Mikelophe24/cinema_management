@@ -22,7 +22,7 @@ public class AccountDao {
 	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
 	static final String SQL_CHECK_EXIST_BY_USERNAME = "SELECT 1 FROM accounts WHERE username = ?";
 	// Constants
-	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status" };
+	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status", "username" };
 
 	public static Account login(String username, String password) {
 		try {
@@ -111,8 +111,11 @@ public class AccountDao {
 		sql.append(" WHERE id = ?");
 		params.add(id);
 
-//		int affectedRows = DatabaseExecutor.update(sql.toString(), params.toArray());
-		return DatabaseExecutor.update(sql.toString(), params.toArray()) > 0;
+		System.out.println("Update SQL: " + sql.toString());
+		System.out.println("Update Params: " + params);
+		int affectedRows = DatabaseExecutor.update(sql.toString(), params.toArray());
+		System.out.println("Affected rows: " + affectedRows);
+		return affectedRows > 0;
 	}
 
 	public static boolean delete(int id) {
