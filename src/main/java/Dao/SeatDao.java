@@ -19,7 +19,7 @@ public class SeatDao {
 	private static final String SQL_DELETE_BY_THEATER_ID = "DELETE FROM seats WHERE theater_id = ?";
 
 	// Constants
-	private static final String UPDATED_FIELDS[] = { "name", "description" };
+//	private static final String UPDATED_FIELDS[] = { "name", "description" };
 
 	public static Seat create(Seat seat) {
 

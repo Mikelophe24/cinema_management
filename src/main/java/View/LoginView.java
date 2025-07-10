@@ -151,24 +151,25 @@ public class LoginView extends JFrame {
 			return;
 		}
 
-		AccountDao accountDao = new AccountDao();
-		Account account = accountDao.login(username, password);
+		try {
+			Account account = AccountDao.login(username, password);
 
-		if (account != null) {
-			JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-			dispose();
-			System.out.println(account.getRole());
-			System.out.println(AccountEnum.Role.ADMIN);
-			System.out.println(AccountEnum.Role.CUSTOMER);
-			if (account.getRole() == AccountEnum.Role.ADMIN) {
-				new MainAdminView(account).setVisible(true);
-			} else if (account.getRole() == AccountEnum.Role.CUSTOMER) {
-				new MainUserView(account).setVisible(true);
-			} else if (account.getRole() == AccountEnum.Role.EMPLOYEE) {
-				//
+			if (account != null) {
+				JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+				dispose();
+				System.out.println(account.getRole() + "Login Now!");
+				if (account.getRole() == AccountEnum.Role.ADMIN) {
+					new MainAdminView(account).setVisible(true);
+				} else if (account.getRole() == AccountEnum.Role.CUSTOMER) {
+					new HomeUseView(account).setVisible(true);
+				} else if (account.getRole() == AccountEnum.Role.EMPLOYEE) {
+					//
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng.");
 			}
-		} else {
-			JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng.");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
 		}
 	}
 }

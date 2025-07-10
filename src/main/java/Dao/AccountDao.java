@@ -25,8 +25,12 @@ public class AccountDao {
 	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status" };
 
 	public static Account login(String username, String password) {
-		Account account = DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
-		return account;
+		try {
+			Account account = DatabaseExecutor.queryOne(SQL_GET_BY_USERNAME, Account.class, username);
+			return account;
+		} catch (Exception e) {
+			throw new RuntimeException("Login failed. Please try again");
+		}
 	}
 
 	public static Account register(String username, String password, String displayName, String avatar,

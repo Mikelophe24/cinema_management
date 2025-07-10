@@ -89,7 +89,7 @@ public class MovieDao {
 				movieWithGenresList.add(movieWithGenre);
 			}
 		}
-//		System.out.println("List movies: " + movieWithGenresList);
+		System.out.println("List movies: " + movieWithGenresList);
 		return movieWithGenresList;
 	}
 
@@ -262,10 +262,10 @@ public class MovieDao {
 //			MovieWithGenres interstellarCreated = MovieDao.create(interstellar, new int[] { 8, 9 }); // Sci-Fi, Fantasy
 
 			// The Dark Knight
-			Movie darkKnight = new Movie(0, "The Dark Knight", "USA", 2008, 152, "Christopher Nolan",
-					"Batman faces the Joker, a criminal mastermind who plunges Gotham into chaos.",
-					"https://example.com/darkknight.jpg", 9.0, 2200000, null, null);
-			MovieWithGenres darkKnightCreated = MovieDao.create(darkKnight, new int[] { 4, 11 }); // Action, Thriller
+//			Movie darkKnight = new Movie(0, "The Dark Knight", "USA", 2008, 152, "Christopher Nolan",
+//					"Batman faces the Joker, a criminal mastermind who plunges Gotham into chaos.",
+//					"https://example.com/darkknight.jpg", 9.0, 2200000, null, null);
+//			MovieWithGenres darkKnightCreated = MovieDao.create(darkKnight, new int[] { 4, 11 }); // Action, Thriller
 
 //			System.out.println("Created movie: " + movieWithGenreCreated.getMovie().getTitle());
 //			System.out.println("Genres:");
@@ -292,7 +292,7 @@ public class MovieDao {
 //			System.out.println(resDeleted ? "Delete OK" : "Delete Failed");
 
 			// Query list
-//			MovieDao.queryList();
+			MovieDao.queryList();
 
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());

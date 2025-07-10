@@ -26,6 +26,9 @@ public class MovieScheduleDao {
 	static final String SQL_CHECK_EXIST_BY_THEATER_ID = "SELECT 1 FROM movie_schedules WHERE theater_id = ?";
 	private static final String SQL_DELETE_BY_THEATER_ID = "DELETE FROM movie_schedules WHERE theater_id = ?";
 	private static final String SQL_DELETE = "DELETE FROM movie_schedules WHERE id = ?";
+	static final String SQL_QUERY_FIRST_SCHEDULE_BY_MOVIE_ID = "SELECT * FROM movie_schedules "
+			+ "WHERE movie_id = ? ORDER BY show_date ASC, start_time ASC LIMIT 1";
+	static final String SQL_QUERY_FIRST_SCHEDULE_BY_SHOW_DATE = "SELECT * FROM movie_schedules WHERE show_date = ?";
 	// Constants
 
 	public static MovieSchedule create(MovieSchedule movieSchedule) {
@@ -92,6 +95,14 @@ public class MovieScheduleDao {
 
 	public static List<MovieSchedule> queryListByMovieId(int movieId) {
 		return DatabaseExecutor.queryList(SQL_QUERY_LIST_BY_MOVIE_ID, MovieSchedule.class, movieId);
+	}
+
+	public static MovieSchedule queryFirstScheduleOfMovie(int movieId) {
+		return DatabaseExecutor.queryOne(SQL_QUERY_FIRST_SCHEDULE_BY_MOVIE_ID, MovieSchedule.class, movieId);
+	}
+
+	public static List<MovieSchedule> queryListScheduleByShowDate(String showDate) {
+		return DatabaseExecutor.queryList(SQL_QUERY_FIRST_SCHEDULE_BY_SHOW_DATE, MovieSchedule.class, showDate);
 	}
 
 	private static final String UPDATED_FIELDS[] = { "theater_id", "movie_id", "show_date", "start_time" };
