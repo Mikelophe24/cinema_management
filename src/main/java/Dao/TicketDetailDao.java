@@ -1,9 +1,9 @@
 package Dao;
 
+import java.util.List;
+
 import Helper.DatabaseExecutor;
 import Model.TicketDetail;
-
-import java.util.List;
 
 public class TicketDetailDao {
 

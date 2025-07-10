@@ -1,9 +1,16 @@
 package View.Admin.utils;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 public class PanelUtils {
     

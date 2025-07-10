@@ -1,8 +1,15 @@
 package View.Admin.common;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class SearchPanel extends JPanel {
     private JTextField[] searchFields;

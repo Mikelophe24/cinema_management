@@ -1,7 +1,11 @@
 package View.Admin.common;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 public class ButtonPanel extends JPanel {
     private JButton btnAdd, btnEdit, btnDelete, btnRefresh;

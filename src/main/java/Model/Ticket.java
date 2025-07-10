@@ -1,8 +1,5 @@
 package Model;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-
 public class Ticket {
 	private int id;
 	private int accountId;
