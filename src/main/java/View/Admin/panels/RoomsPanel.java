@@ -1,6 +1,13 @@
 package View.Admin.panels;
 
+import Dao.TheaterDao;
+import Enum.TheaterEnum;
+import Model.Theater;
+import View.Admin.common.*;
+
+import javax.swing.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
@@ -13,95 +20,225 @@ import View.Admin.common.SearchPanel;
 
 public class RoomsPanel extends BasePanel {
 
-	public RoomsPanel() {
-		super("Quản lý phòng chiếu", "🎭");
-	}
+    public RoomsPanel() {
+        super("Quản lý phòng chiếu", "");
+        loadDataFromDatabase();
+    }
 
-	@Override
-	protected void createComponents() {
-		// Tạo search panel
-		String[] fieldLabels = { "Tên phòng" };
-		searchPanel = new SearchPanel(fieldLabels, new String[] {}, new String[][] {});
+    @Override
+    protected void createComponents() {
+        String[] fieldLabels = {"Tên phòng"};
+        String[] comboOptions = {"Tất cả", "active", "closed", "maintenance"};
+        searchPanel = new SearchPanel(fieldLabels, new String[]{"Trạng thái"}, new String[][]{comboOptions});
 
-		// Tạo table
-		String[] columns = { "ID", "Tên phòng", "Ghế đôi", "Ghế đơn", "Trạng thái", "Ghi chú" };
-		table = createStyledTable(columns);
+        String[] columns = {"ID", "Tên phòng", "Ghế đơn", "Ghế đôi", "Trạng thái", "Mô tả"};
+        table = createStyledTable(columns);
 
-		// Tạo form panel
-		String[] formFieldLabels = { "Tên phòng", "Ghế đôi", "Ghế đơn" };
-		formPanel = new FormPanel("Thông tin phòng chiếu", formFieldLabels, new String[] {}, new String[][] {});
+        String[] formFieldLabels = {"Tên phòng", "Ghế đơn", "Ghế đôi", "Mô tả"};
+        String[] formComboLabels = {"Trạng thái"};
+        String[][] formComboOptions = {{"active", "closed", "maintenance"}};
+        formPanel = new FormPanel("Thông tin phòng chiếu", formFieldLabels, formComboLabels, formComboOptions);
 
-		// Tạo button panel
-		buttonPanel = new ButtonPanel(new String[] {});
-	}
+        buttonPanel = new ButtonPanel(new String[]{});
+    }
 
-	@Override
-	protected void addSampleData() {
-		Object[][] sampleData = { { 1, "Phòng 1", 20, 80, "Hoạt động", "Phòng chiếu thường" },
-				{ 2, "Phòng 2", 10, 70, "Hoạt động", "Phòng chiếu 3D" },
-				{ 3, "Phòng 3", 15, 55, "Hoạt động", "Phòng IMAX" }, { 4, "Phòng 4", 8, 32, "Hoạt động", "Phòng VIP" },
-				{ 5, "Phòng 5", 25, 100, "Bảo trì", "Đang bảo trì" },
-				{ 6, "Phòng 6", 12, 90, "Hoạt động", "Phòng 3D mới" },
-				{ 7, "Phòng 7", 18, 60, "Hoạt động", "Phòng IMAX lớn" },
-				{ 8, "Phòng 8", 5, 30, "Hoạt động", "Phòng VIP cao cấp" },
-				{ 9, "Phòng 9", 22, 98, "Hoạt động", "Phòng chiếu thường" },
-				{ 10, "Phòng 10", 14, 86, "Hoạt động", "Phòng 3D tiêu chuẩn" } };
+    @Override
+    protected void displaySelectedRowData() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            formPanel.setTextFieldValue(0, table.getValueAt(selectedRow, 1).toString()); // Tên phòng
+            formPanel.setTextFieldValue(1, table.getValueAt(selectedRow, 2).toString()); // Ghế đơn
+            formPanel.setTextFieldValue(2, table.getValueAt(selectedRow, 3).toString()); // Ghế đôi
+            formPanel.setComboBoxValue(0, table.getValueAt(selectedRow, 4).toString());  // Trạng thái
+            formPanel.setTextFieldValue(3, table.getValueAt(selectedRow, 5).toString()); // Mô tả
+        }
+    }
 
-		for (Object[] row : sampleData) {
-			tableModel.addRow(row);
-		}
-	}
+    @Override
+    protected void clearForm() {
+        formPanel.clearForm();
+        table.clearSelection();
+    }
 
-	@Override
-	protected void displaySelectedRowData() {
-		int selectedRow = table.getSelectedRow();
-		if (selectedRow != -1) {
-			formPanel.setTextFieldValue(0, table.getValueAt(selectedRow, 1).toString()); // Tên phòng
-			formPanel.setTextFieldValue(1, table.getValueAt(selectedRow, 2).toString()); // Ghế đôi
-			formPanel.setTextFieldValue(2, table.getValueAt(selectedRow, 3).toString()); // Ghế đơn
-		}
-	}
+    @Override
+    protected Map<String, String> getFormData() {
+        Map<String, String> data = new HashMap<>();
+        data.put("roomName", formPanel.getTextFieldValue(0));
+        data.put("normalSeat", formPanel.getTextFieldValue(1));
+        data.put("coupleSeat", formPanel.getTextFieldValue(2));
+        data.put("description", formPanel.getTextFieldValue(3));
+        data.put("status", formPanel.getComboBoxValue(0));
+        return data;
+    }
 
-	@Override
-	protected void clearForm() {
-		formPanel.clearForm();
-	}
+    @Override
+    protected void handleAdd() {
+        try {
+            Map<String, String> data = getFormData();
+            String name = data.get("roomName").trim();
+            String normalSeatStr = data.get("normalSeat");
+            String coupleSeatStr = data.get("coupleSeat");
 
-	@Override
-	protected Map<String, String> getFormData() {
-		Map<String, String> data = new HashMap<>();
-		data.put("roomName", formPanel.getTextFieldValue(0));
-		data.put("doubleSeat", formPanel.getTextFieldValue(1));
-		data.put("singleSeat", formPanel.getTextFieldValue(2));
-		return data;
-	}
+            if (normalSeatStr.isEmpty() || coupleSeatStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ số ghế đơn và ghế đôi!");
+                return;
+            }
 
-	@Override
-	protected void handleEdit(int selectedRow) {
-		System.out.println("Sửa phòng chiếu ở hàng: " + selectedRow);
-		System.out.println("Dữ liệu form: " + getFormData());
-	}
+            int normalSeat = Integer.parseInt(normalSeatStr);
+            int coupleSeat = Integer.parseInt(coupleSeatStr);
+            String description = data.get("description");
+            String statusStr = data.get("status");
 
-	@Override
-	protected void handleAdd() {
-		System.out.println("Thêm phòng chiếu mới");
-		System.out.println("Dữ liệu form: " + getFormData());
-	}
+            int seatCount = normalSeat + coupleSeat;
+            int capacity = 2 * seatCount - normalSeat;
 
-	@Override
-	protected void handleSearch() {
-		JTextField[] searchFields = searchPanel.getSearchFields();
-		JComboBox<String>[] searchCombos = searchPanel.getSearchCombos();
+            if (coupleSeat < 0 || normalSeat < 0) {
+                JOptionPane.showMessageDialog(this, "Số ghế không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-		String roomName = searchFields[0].getText().trim();
-		String roomType = searchCombos[0].getSelectedItem().toString();
+            TheaterEnum.Status status = TheaterEnum.Status.valueOf(statusStr.toUpperCase());
 
-		System.out.println("Tìm kiếm: " + roomName + ", " + roomType);
-	}
+            Theater theater = new Theater(
+                    name,
+                    status,
+                    capacity,
+                    seatCount,
+                    description,
+                    ""
+            );
 
-	@Override
-	protected void handleDelete(int selectedRow) {
-		// TODO Auto-generated method stub
+            Theater created = TheaterDao.create(theater);
+            if (created != null) {
+                JOptionPane.showMessageDialog(this, "Thêm phòng chiếu thành công!");
+                loadDataFromDatabase();
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm thất bại!");
+            }
 
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void handleEdit(int selectedRow) {
+        try {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một phòng để sửa.");
+                return;
+            }
+
+            int id = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+            Map<String, String> data = getFormData();
+            String name = data.get("roomName").trim();
+            int normalSeat = Integer.parseInt(data.get("normalSeat"));
+            int coupleSeat = Integer.parseInt(data.get("coupleSeat"));
+            String description = data.get("description");
+            String statusStr = data.get("status");
+
+            int seatCount = normalSeat + coupleSeat;
+            int capacity = 2 * seatCount - normalSeat;
+
+            if (coupleSeat < 0 || normalSeat < 0) {
+                JOptionPane.showMessageDialog(this, "Số ghế không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            TheaterEnum.Status status = TheaterEnum.Status.valueOf(statusStr.toUpperCase());
+
+            Map<String, Object> updateFields = new HashMap<>();
+            updateFields.put("name", name);
+            updateFields.put("capacity", capacity);
+            updateFields.put("seat_count", seatCount);
+            updateFields.put("status", status.getValue());
+            updateFields.put("description", description);
+            updateFields.put("image", "");
+
+            boolean updated = TheaterDao.update(id, updateFields);
+            if (updated) {
+                JOptionPane.showMessageDialog(this, "Cập nhật phòng chiếu thành công!");
+                loadDataFromDatabase();
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void handleSearch() {
+        JTextField[] searchFields = searchPanel.getSearchFields();
+        JComboBox<String>[] comboBoxes = searchPanel.getComboBoxes();
+
+        String keyword = searchFields[0].getText().trim().toLowerCase();
+        String selectedStatus = comboBoxes[0].getSelectedItem().toString().toLowerCase();
+
+        List<TheaterDao.TheaterWithSeats> list = TheaterDao.queryList();
+        tableModel.setRowCount(0);
+
+        for (TheaterDao.TheaterWithSeats tws : list) {
+            Theater t = tws.getTheater();
+            boolean matchName = t.getName().toLowerCase().contains(keyword);
+            boolean matchStatus = selectedStatus.equals("tất cả") || t.getStatus().getValue().toLowerCase().equals(selectedStatus);
+
+            if (matchName && matchStatus) {
+                int coupleSeat = t.getCapacity() - t.getSeatCount();
+                int normalSeat = 2 * t.getSeatCount() - t.getCapacity();
+
+                tableModel.addRow(new Object[]{
+                        t.getId(), t.getName(), normalSeat, coupleSeat, t.getStatus().getValue(), t.getDescription()
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void loadDataFromDatabase() {
+        List<TheaterDao.TheaterWithSeats> list = TheaterDao.queryList();
+        tableModel.setRowCount(0);
+
+        for (TheaterDao.TheaterWithSeats tws : list) {
+            Theater t = tws.getTheater();
+            int coupleSeat = t.getCapacity() - t.getSeatCount();
+            int normalSeat = 2 * t.getSeatCount() - t.getCapacity();
+
+            tableModel.addRow(new Object[]{
+                    t.getId(), t.getName(), normalSeat, coupleSeat, t.getStatus().getValue(), t.getDescription()
+            });
+        }
+    }
+
+    @Override
+    protected void addSampleData() {
+        // Không dùng dữ liệu giả nữa.
+    }
+
+    @Override
+    protected void handleDelete(int selectedRow) {
+        try {
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một phòng để xóa.");
+                return;
+            }
+            int id = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+            boolean deleted = TheaterDao.delete(id);
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Xóa phòng chiếu thành công!");
+                loadDataFromDatabase();
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi xóa: " + e.getMessage());
+        }
+    }
 }
