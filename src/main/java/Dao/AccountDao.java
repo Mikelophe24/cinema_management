@@ -22,7 +22,8 @@ public class AccountDao {
 	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
 	static final String SQL_CHECK_EXIST_BY_USERNAME = "SELECT 1 FROM accounts WHERE username = ?";
 	// Constants
-	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status", "username" };
+	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status",
+			"username" };
 
 	public static Account login(String username, String password) {
 		try {
