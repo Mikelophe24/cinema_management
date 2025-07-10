@@ -61,7 +61,7 @@ public class MovieScheduleDao {
 		}
 
 		long id = DatabaseExecutor.insert(SQL_CREATE, movieSchedule.getTheaterId(), movieSchedule.getMovieId(),
-				movieSchedule.getShowDate(), movieSchedule.getStartTime(), movieSchedule.getDuration());
+				movieSchedule.getShowDate(), movieSchedule.getStartTime(), movieSchedule.getDuration(), movieSchedule.getPrice());
 
 		if (id > 0) {
 			List<Seat> seats = DatabaseExecutor.queryList(SeatDao.SQL_QUERY_LIST_BY_THEATER_ID, Seat.class,
@@ -104,8 +104,13 @@ public class MovieScheduleDao {
 	public static List<MovieSchedule> queryListScheduleByShowDate(String showDate) {
 		return DatabaseExecutor.queryList(SQL_QUERY_FIRST_SCHEDULE_BY_SHOW_DATE, MovieSchedule.class, showDate);
 	}
+	
+	public static List<MovieSchedule> queryListByMovieAndTheater(int movieId, int theaterId) {
+		String sql = "SELECT * FROM movie_schedules WHERE movie_id = ? AND theater_id = ?";
+		return DatabaseExecutor.queryList(sql, MovieSchedule.class, movieId, theaterId);
+	}
 
-	private static final String UPDATED_FIELDS[] = { "theater_id", "movie_id", "show_date", "start_time" };
+	private static final String UPDATED_FIELDS[] = { "theater_id", "movie_id", "show_date", "start_time", "price" };
 
 	public static boolean update(int id, Map<String, Object> updateFields) {
 		if (updateFields == null || updateFields.isEmpty()) {
@@ -146,8 +151,10 @@ public class MovieScheduleDao {
 				boolean resDeleted = MovieScheduleDao.delete(id);
 				if (resDeleted) {
 					int newTheaterId = (int) entry.getValue();
+					// Lấy giá hiện tại từ schedule cũ
+					double currentPrice = existSchedule.getPrice();
 					MovieScheduleDao.create(new MovieSchedule(0, newTheaterId, movieId, newShowDate, newStartTime,
-							duration, (double) 0));
+							duration, currentPrice));
 				}
 				return true;
 			case "movie_id":

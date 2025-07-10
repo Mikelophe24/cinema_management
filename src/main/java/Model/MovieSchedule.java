@@ -15,8 +15,7 @@ public class MovieSchedule {
 	public MovieSchedule() {
 	}
 
-	public MovieSchedule(int id, int theaterId, int movieId, LocalDate showDate, LocalTime startTime, int duration,
-			Double price) {
+	public MovieSchedule(int id, int theaterId, int movieId, LocalDate showDate, LocalTime startTime, int duration,Double price) {
 		this.id = id;
 		this.theaterId = theaterId;
 		this.movieId = movieId;

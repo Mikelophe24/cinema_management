@@ -88,7 +88,7 @@ public class AdminDashboard extends JFrame {
 		contentPanel.add(new StaffPanel(), "staff"); // ✅ THÊM DÒNG NÀY
 		contentPanel.add(new SchedulePanel(), "schedule");
 		contentPanel.add(new AccountsPanel(), "accounts");
-		contentPanel.add(new InvoicesPanel(), "stinvoicesaff");
+		contentPanel.add(new InvoicesPanel(), "invoices");
 		contentPanel.add(new MoviesPanel(), "movies");
 		add(contentPanel);
 
