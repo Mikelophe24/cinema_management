@@ -165,10 +165,39 @@ public class MovieDao {
 		return DatabaseExecutor.delete(SQL_DELETE, id) > 0;
 	}
 
-
 	public static List<MovieGenre> getAllGenres() {
-		return MovieGenreDao.queryList(); // đảm bảo MovieGenreDao có hàm này
+		return MovieGenreDao.queryList();
 	}
+
+	public static List<MovieWithGenres> search(String title, String genreName) {
+		StringBuilder sql = new StringBuilder(
+				"SELECT DISTINCT m.* " + "FROM movies m " + "LEFT JOIN movie_genres mg ON m.id = mg.movie_id "
+						+ "LEFT JOIN genres g ON mg.genre_id = g.id " + "WHERE 1=1 ");
+
+		List<Object> params = new ArrayList<>();
+
+		if (title != null && !title.isBlank()) {
+			sql.append("AND m.title LIKE ? ");
+			params.add("%" + title + "%");
+		}
+
+		if (genreName != null && !genreName.isBlank()) {
+			sql.append("AND g.name = ? ");
+			params.add(genreName);
+		}
+
+		List<Movie> movies = DatabaseExecutor.queryList(sql.toString(), Movie.class, params.toArray());
+		List<MovieWithGenres> movieWithGenresList = new ArrayList<>();
+
+		for (Movie movie : movies) {
+			if (movie != null && movie.getId() > 0) {
+				movieWithGenresList.add(queryOne(movie.getId()));
+			}
+		}
+
+		return movieWithGenresList;
+	}
+
 	// Nested Class
 	public static class MovieWithGenres {
 		private final Movie movie;
@@ -296,7 +325,7 @@ public class MovieDao {
 //			System.out.println(resDeleted ? "Delete OK" : "Delete Failed");
 
 			// Query list
-			MovieDao.queryList();
+//			MovieDao.queryList();
 
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());

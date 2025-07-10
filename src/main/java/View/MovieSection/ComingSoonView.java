@@ -88,16 +88,35 @@ public class ComingSoonView extends JPanel {
 		try {
 			new Thread(() -> {
 				try {
-					ImageIcon icon = new ImageIcon(new URL(movie.imageUrl));
-					Image img = icon.getImage().getScaledInstance(220, 310, Image.SCALE_SMOOTH);
-					SwingUtilities.invokeLater(() -> poster.setIcon(new ImageIcon(img)));
+					ImageIcon icon;
+					String posterUrl = movie.imageUrl;
+
+					if (posterUrl != null && (posterUrl.startsWith("http://") || posterUrl.startsWith("https://"))) {
+						icon = new ImageIcon(new URL(posterUrl));
+					} else if (posterUrl != null && !posterUrl.isBlank()) {
+						String localPath = Context.AppContext.posterPath + "/" + posterUrl;
+						icon = new ImageIcon(localPath);
+					} else {
+						icon = null;
+					}
+
+					if (icon != null) {
+						Image img = icon.getImage().getScaledInstance(220, 310, Image.SCALE_SMOOTH);
+						SwingUtilities.invokeLater(() -> poster.setIcon(new ImageIcon(img)));
+					} else {
+						SwingUtilities.invokeLater(() -> poster.setText(movie.name));
+					}
+
 				} catch (Exception e) {
-					poster.setText(movie.name);
+					e.printStackTrace();
+					SwingUtilities.invokeLater(() -> poster.setText(movie.name));
 				}
 			}).start();
 		} catch (Exception e) {
+			e.printStackTrace();
 			poster.setText(movie.name);
 		}
+
 		poster.setBounds(10, 10, 220, 310);
 		card.add(poster);
 

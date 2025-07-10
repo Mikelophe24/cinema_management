@@ -131,6 +131,7 @@ public abstract class BasePanel extends JPanel {
 					btn.setEnabled(false);
 				}
 				clearForm();
+				addSampleData();
 			});
 
 			buttonPanel.getBtnEdit().addActionListener(e -> {
@@ -150,6 +151,7 @@ public abstract class BasePanel extends JPanel {
 					int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa bản ghi này?",
 							"Xác nhận xóa", JOptionPane.YES_NO_OPTION);
 					if (confirm == JOptionPane.YES_OPTION) {
+						handleDelete(selectedRow);
 						tableModel.removeRow(selectedRow);
 						clearForm();
 						buttonPanel.getBtnEdit().setEnabled(false);
@@ -188,4 +190,6 @@ public abstract class BasePanel extends JPanel {
 	protected abstract void handleAdd();
 
 	protected abstract void handleSearch();
+
+	protected abstract void handleDelete(int selectedRow);
 }
