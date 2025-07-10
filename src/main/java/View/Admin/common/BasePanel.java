@@ -168,7 +168,6 @@ public abstract class BasePanel extends JPanel {
 				}
 			});
 
-
 			buttonPanel.getBtnAdd().addActionListener(e -> {
 				handleAdd();
 			});
