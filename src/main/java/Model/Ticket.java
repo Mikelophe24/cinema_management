@@ -1,7 +1,9 @@
 package Model;
 
-public class Ticket {
+import java.math.BigDecimal;
+import java.sql.Date;
 
+public class Ticket {
 	private int id;
 	private int accountId;
 	private int scheduleId;

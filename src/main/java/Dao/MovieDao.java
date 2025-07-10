@@ -165,6 +165,10 @@ public class MovieDao {
 		return DatabaseExecutor.delete(SQL_DELETE, id) > 0;
 	}
 
+
+	public static List<MovieGenre> getAllGenres() {
+		return MovieGenreDao.queryList(); // đảm bảo MovieGenreDao có hàm này
+	}
 	// Nested Class
 	public static class MovieWithGenres {
 		private final Movie movie;

@@ -3,11 +3,19 @@ package Model;
 public class MovieGenre {
 	private int id;
 	private String name;
+	private String genreName;
 	private String description;
 
 	public MovieGenre() {
 	}
 
+	public String getGenreName() {
+		return genreName;
+	}
+
+	public void setGenreName(String genreName) {
+		this.genreName = genreName;
+	}
 	public MovieGenre(int id, String name, String description) {
 		this.id = id;
 		this.name = name;
