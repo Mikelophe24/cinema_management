@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 //import View.Admin.panels.AccountsPanel;
-//import View.Admin.panels.CustomersPanel;
+import View.Admin.panels.CustomersPanel;
 //import View.Admin.panels.InvoicesPanel;
 //// Import các panel classes
 //import View.Admin.panels.MoviesPanel;
@@ -80,6 +80,7 @@ public class AdminDashboard extends JFrame {
 		contentPanel.setBackground(Color.WHITE);
 
 		contentPanel.add(new RoomsPanel(), "rooms");
+		contentPanel.add(new CustomersPanel(), "customers");
 		contentPanel.add(new StaffPanel(), "staff"); // ✅ THÊM DÒNG NÀY
 		add(contentPanel);
 
