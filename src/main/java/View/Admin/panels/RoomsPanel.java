@@ -95,4 +95,10 @@ public class RoomsPanel extends BasePanel {
         
         System.out.println("Tìm kiếm: " + roomName + ", " + roomType);
     }
+
+	@Override
+	protected void handleDelete(int selectedRow) {
+		// TODO Auto-generated method stub
+		
+	}
 } 

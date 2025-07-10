@@ -21,6 +21,7 @@ public class AccountDao {
 	private static final String SQL_DELETE_BY_ID = "DELETE FROM accounts WHERE id = ?";
 	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM accounts WHERE id = ?";
 	static final String SQL_CHECK_EXIST_BY_USERNAME = "SELECT 1 FROM accounts WHERE username = ?";
+	private static final String SQL_GET_BY_ID = "SELECT * FROM accounts WHERE id = ?";
 	// Constants
 	private static final String UPDATED_FIELDS[] = { "password", "role", "avatar", "display_name", "status", "username" };
 
@@ -127,6 +128,10 @@ public class AccountDao {
 			throw new RuntimeException("Account not found");
 		}
 		return DatabaseExecutor.delete(SQL_DELETE_BY_ID, id) > 0;
+	}
+
+	public static Account getById(int id) {
+		return DatabaseExecutor.queryOne(SQL_GET_BY_ID, Account.class, id);
 	}
 
 	// Main test

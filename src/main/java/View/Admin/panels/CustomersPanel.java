@@ -108,4 +108,10 @@ public class CustomersPanel extends BasePanel {
         
         System.out.println("Tìm kiếm: " + fullName + ", " + phone + ", " + memberType);
     }
+
+	@Override
+	protected void handleDelete(int selectedRow) {
+		// TODO Auto-generated method stub
+		
+	}
 } 

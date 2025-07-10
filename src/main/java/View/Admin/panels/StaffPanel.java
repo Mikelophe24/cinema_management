@@ -106,4 +106,10 @@ public class StaffPanel extends BasePanel {
         
         System.out.println("Tìm kiếm: " + fullName + ", " + phone + ", " + position);
     }
+
+	@Override
+	protected void handleDelete(int selectedRow) {
+		// TODO Auto-generated method stub
+		
+	}
 } 

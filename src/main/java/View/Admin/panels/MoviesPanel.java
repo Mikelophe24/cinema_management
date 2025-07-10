@@ -199,4 +199,10 @@ public class MoviesPanel extends BasePanel {
 
 		System.out.println("Tìm kiếm: " + movieName + ", " + artist + ", " + genre);
 	}
+
+	@Override
+	protected void handleDelete(int selectedRow) {
+		// TODO Auto-generated method stub
+		
+	}
 }
