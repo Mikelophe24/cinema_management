@@ -20,15 +20,15 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import Model.Theater;
-import View.MovieSection.ComingSoonView.ComingSoonMovieInfo;
+import View.MovieSection.ComingSoonView.MovieInfo;
 
 public class ConfirmBookingDialog extends JDialog {
 	private String genre;
 	private String duration;
 	private String imageUrl;
 
-	public ConfirmBookingDialog(Frame owner, ComingSoonMovieInfo movie, Theater theater, String showTime,
-			int scheduleId, Double price) {
+	public ConfirmBookingDialog(Frame owner, MovieInfo movie, Theater theater, String showTime, int scheduleId,
+			Double price) {
 		super(owner, "Xác nhận đặt vé", true);
 		this.genre = movie.genre;
 		this.duration = movie.duration;

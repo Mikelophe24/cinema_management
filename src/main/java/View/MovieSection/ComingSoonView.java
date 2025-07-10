@@ -26,10 +26,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class ComingSoonView extends JPanel {
-	private List<ComingSoonMovieInfo> movies = new ArrayList<>();
+	private List<MovieInfo> movies = new ArrayList<>();
 	private JPanel listPanel;
 
-	public ComingSoonView(List<ComingSoonMovieInfo> movieList) {
+	public ComingSoonView(List<MovieInfo> movieList) {
 		setBackground(Color.WHITE);
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -50,7 +50,7 @@ public class ComingSoonView extends JPanel {
 		renderMovies();
 	}
 
-	private void loadMovies(List<ComingSoonMovieInfo> movieList) {
+	private void loadMovies(List<MovieInfo> movieList) {
 		this.movies = movieList;
 	}
 
@@ -73,7 +73,7 @@ public class ComingSoonView extends JPanel {
 		listPanel.repaint();
 	}
 
-	private JPanel createMovieCard(ComingSoonMovieInfo movie) {
+	private JPanel createMovieCard(MovieInfo movie) {
 		JPanel card = new JPanel();
 		card.setPreferredSize(new Dimension(240, 440));
 		card.setBackground(Color.WHITE);
@@ -142,7 +142,7 @@ public class ComingSoonView extends JPanel {
 		return card;
 	}
 
-	private void showBookingModal(ComingSoonMovieInfo movie) {
+	private void showBookingModal(MovieInfo movie) {
 		JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Đặt Vé - " + movie.name, true);
 		dialog.setSize(500, 300);
 		dialog.setLocationRelativeTo(null); // căn giữa màn hình
@@ -223,12 +223,11 @@ public class ComingSoonView extends JPanel {
 		dialog.setVisible(true);
 	}
 
-	public static class ComingSoonMovieInfo {
+	public static class MovieInfo {
 		public int id;
 		public String imageUrl, name, genre, duration, releaseDate;
 
-		public ComingSoonMovieInfo(int id, String imageUrl, String name, String genre, String duration,
-				String releaseDate) {
+		public MovieInfo(int id, String imageUrl, String name, String genre, String duration, String releaseDate) {
 			this.id = id;
 			this.imageUrl = imageUrl;
 			this.name = name;

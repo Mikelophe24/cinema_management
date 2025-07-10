@@ -41,9 +41,8 @@ import Model.Movie;
 import Model.MovieGenre;
 import Model.MovieSchedule;
 import View.MovieSection.ComingSoonView;
-import View.MovieSection.ComingSoonView.ComingSoonMovieInfo;
+import View.MovieSection.ComingSoonView.MovieInfo;
 import View.MovieSection.NowShowingView;
-import View.MovieSection.NowShowingView.NowShowingMovieInfo;
 import View.MovieSection.SpecialScreeningView;
 
 @SuppressWarnings("unused")
@@ -68,8 +67,8 @@ public class HomeUseView extends JFrame {
 	private Account account;
 	private String selectedRap = "Hà Nội";
 	private List<MovieWithGenres> movieWithGenreList = MovieDao.queryList();
-	private List<ComingSoonMovieInfo> comingMovieInfo = new ArrayList<ComingSoonMovieInfo>(0);
-	private List<NowShowingMovieInfo> nowShowingMovieInfo = new ArrayList<NowShowingMovieInfo>(0);
+	private List<MovieInfo> comingMovieInfo = new ArrayList<MovieInfo>(0);
+	private List<MovieInfo> nowShowingMovieInfo = new ArrayList<MovieInfo>(0);
 
 	public HomeUseView() {
 	}
@@ -291,15 +290,16 @@ public class HomeUseView extends JFrame {
 				}
 //				System.out.println(genreNames.toString());
 //				System.out.println(releaseDate);
-				this.comingMovieInfo.add(new ComingSoonMovieInfo(movie.getId(), movie.getPoster(), movie.getTitle(),
+				this.comingMovieInfo.add(new MovieInfo(movie.getId(), movie.getPoster(), movie.getTitle(),
 						genreNames.toString(), movie.getDuration() + "phút", releaseDate));
 				List<MovieSchedule> todaySchedules = MovieScheduleDao
 						.queryListScheduleByShowDate(LocalDate.now().toString());
 				if (todaySchedules != null && todaySchedules.size() > 0) {
 					for (MovieSchedule schedule : todaySchedules) {
 						if (schedule.getMovieId() == movie.getId()) {
-							this.nowShowingMovieInfo.add(new NowShowingMovieInfo(movie.getPoster(), movie.getTitle(),
-									genreNames.toString(), movie.getDuration() + "phút", LocalDate.now().toString()));
+							this.nowShowingMovieInfo.add(new MovieInfo(movie.getId(), movie.getPoster(),
+									movie.getTitle(), genreNames.toString(), movie.getDuration() + "phút",
+									LocalDate.now().toString()));
 						}
 					}
 				}
