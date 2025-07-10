@@ -2,7 +2,7 @@ package Enum;
 
 public class SeatScheduleEnum {
 	public enum Status {
-		AVAILABLE("availabel"), SOLD("sold");
+		AVAILABLE("available"), SOLD("sold");
 
 		private final String value;
 

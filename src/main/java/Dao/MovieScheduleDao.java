@@ -15,8 +15,8 @@ import Model.Seat;
 public class MovieScheduleDao {
 	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM movie_schedules WHERE id = ?";
 	static final String SQL_CHECK_EXIST = "SELECT 1 FROM movie_schedules WHERE theater_id = ? and movie_id = ?";
-	private static final String SQL_CREATE = "INSERT INTO movie_schedules(theater_id, movie_id, show_date, start_time, duration)"
-			+ "VALUES (?, ?, ?, ?, ?)";
+	private static final String SQL_CREATE = "INSERT INTO movie_schedules(theater_id, movie_id, show_date, start_time, duration, price)"
+			+ "VALUES (?, ?, ?, ?, ?, ?)";
 	static final String SQL_QUERY_ONE = "SELECT * FROM movie_schedules WHERE id = ?";
 	static final String SQL_QUERY_ONE_BY_FK_ID = "SELECT * FROM movie_schedules WHERE theater_id = ? and movie_id = ?";
 	static final String SQL_QUERY_LIST_BY_THEATER_AND_DATE = "SELECT * FROM movie_schedules WHERE theater_id = ? AND show_date = ?";
@@ -146,8 +146,8 @@ public class MovieScheduleDao {
 				boolean resDeleted = MovieScheduleDao.delete(id);
 				if (resDeleted) {
 					int newTheaterId = (int) entry.getValue();
-					MovieScheduleDao
-							.create(new MovieSchedule(0, newTheaterId, movieId, newShowDate, newStartTime, duration));
+					MovieScheduleDao.create(new MovieSchedule(0, newTheaterId, movieId, newShowDate, newStartTime,
+							duration, (double) 0));
 				}
 				return true;
 			case "movie_id":

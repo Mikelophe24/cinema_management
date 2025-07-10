@@ -215,8 +215,8 @@ public class ComingSoonView extends JPanel {
 			if (province != null && cinema != null) {
 				dialog.dispose();
 				// Truyền đủ tham số cho ShowtimeDialog
-				new View.ModalView.ShowtimeDialog((Frame) SwingUtilities.getWindowAncestor(this), movie.name, cinema,
-						movie.releaseDate, movie.genre, movie.duration, movie.imageUrl).setVisible(true);
+				new View.ModalView.ShowtimeDialog((Frame) SwingUtilities.getWindowAncestor(this), movie)
+						.setVisible(true);
 			}
 		});
 
@@ -224,9 +224,12 @@ public class ComingSoonView extends JPanel {
 	}
 
 	public static class ComingSoonMovieInfo {
-		String imageUrl, name, genre, duration, releaseDate;
+		public int id;
+		public String imageUrl, name, genre, duration, releaseDate;
 
-		public ComingSoonMovieInfo(String imageUrl, String name, String genre, String duration, String releaseDate) {
+		public ComingSoonMovieInfo(int id, String imageUrl, String name, String genre, String duration,
+				String releaseDate) {
+			this.id = id;
 			this.imageUrl = imageUrl;
 			this.name = name;
 			this.genre = genre;

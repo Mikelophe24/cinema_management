@@ -281,7 +281,7 @@ public class HomeUseView extends JFrame {
 						genreNames.append(", ");
 					}
 				}
-				System.out.println(genreNames);
+//				System.out.println(genreNames);	
 				String releaseDate = "Sắp công chiếu";
 				MovieSchedule firstSchedule = MovieScheduleDao.queryFirstScheduleOfMovie(movie.getId());
 				if (firstSchedule != null && firstSchedule.getShowDate() != null) {
@@ -289,9 +289,9 @@ public class HomeUseView extends JFrame {
 						continue;
 					releaseDate = firstSchedule.getShowDate().toString();
 				}
-				System.out.println(genreNames.toString());
-				System.out.println(releaseDate);
-				this.comingMovieInfo.add(new ComingSoonMovieInfo(movie.getPoster(), movie.getTitle(),
+//				System.out.println(genreNames.toString());
+//				System.out.println(releaseDate);
+				this.comingMovieInfo.add(new ComingSoonMovieInfo(movie.getId(), movie.getPoster(), movie.getTitle(),
 						genreNames.toString(), movie.getDuration() + "phút", releaseDate));
 				List<MovieSchedule> todaySchedules = MovieScheduleDao
 						.queryListScheduleByShowDate(LocalDate.now().toString());

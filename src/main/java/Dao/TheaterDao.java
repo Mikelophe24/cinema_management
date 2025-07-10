@@ -65,6 +65,14 @@ public class TheaterDao {
 		return new TheaterWithSeats(theater, seats.toArray(new Seat[0]));
 	}
 
+	public static Theater queryOneWithoutSeat(int id) {
+		Theater theater = DatabaseExecutor.queryOne(SQL_QUERY_ONE, Theater.class, id);
+		if (theater == null) {
+			throw new RuntimeException("Theater not found");
+		}
+		return theater;
+	}
+
 	// Query list
 	public static List<TheaterWithSeats> queryList() {
 		List<Theater> theaters = DatabaseExecutor.queryList(SQL_QUERY_LIST, Theater.class);

@@ -1,111 +1,114 @@
 package Dao;
 
-import Model.Ticket;
-import Model.User;
-import util.MyConnection;
-
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
+import Helper.DatabaseExecutor;
+import Model.Ticket;
+
 public class TicketDao {
+	// Common SQL
+	private static final String SQL_CREATE = "INSERT INTO tickets(account_id, schedule_id, seat_id, seat_count, invoice_id) VALUES (?, ?, ?, ?, ?)";
+	static final String SQL_CHECK_EXIST = "SELECT 1 FROM tickets WHERE schedule_id = ? and account_id = ?";
+	static final String SQL_QUERY_ONE = "SELECT * FROM tickets WHERE id = ?";
+	static final String SQL_QUERY_LIST = "SELECT * FROM tickets";
+	static final String SQL_QUERY_LIST_BY_ACCOUNT_ID = "SELECT * FROM tickets WHERE account_id = ?";
+	static final String SQL_QUERY_LIST_BY_SCHEDULE_ID = "SELECT * FROM tickets WHERE schedule_id = ?";
+	static final String SQL_CHECK_EXIST_BY_ID = "SELECT 1 FROM tickets WHERE id = ?";
+	static final String SQL_CHECK_EXIST_IN_THEATER = "SELECT 1 FROM tickets WHERE name = ? and theater_id = ?";
+	static final String SQL_CHECK_EXIST_BY_THEATER_ID = "SELECT 1 FROM tickets WHERE theater_id = ?";
+	private static final String SQL_DELETE_BY_SCHEDULE_ID = "DELETE FROM tickets WHERE schedul_id = ?";
+	private static final String SQL_DELETE_BY_SEAT_ID = "DELETE FROM tickets WHERE seat_id = ?";
+	private static final String SQL_DELETE_BY_ID = "DELETE FROM tickets WHERE id = ?";
 
-    public boolean addTicket(Ticket ticket) {
-        String sql = "INSERT INTO tickets (user_id, movie_id, showtime, seat) VALUES (?, ?, ?, ?)";
+	// Constants
+//	private static final String UPDATED_FIELDS[] = { "name", "description" };
 
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+	public static Ticket create(Ticket ticket) {
 
-            stmt.setInt(1, ticket.getUserId());
-            stmt.setInt(2, ticket.getMovieId());
-            stmt.setString(3, ticket.getShowtime());
-            stmt.setString(4, ticket.getSeat());
+		boolean isExistAccount = DatabaseExecutor.exists(AccountDao.SQL_CHECK_EXIST_BY_ID, ticket.getAccountId());
+		if (!isExistAccount) {
+			throw new RuntimeException("Account not found");
+		}
 
-            return stmt.executeUpdate() > 0;
+		boolean isExistSchedule = DatabaseExecutor.exists(MovieScheduleDao.SQL_CHECK_EXIST_BY_ID,
+				ticket.getScheduleId());
+		if (!isExistSchedule) {
+			throw new RuntimeException("Schedule not found");
+		}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+//		boolean isExistInvoice = DatabaseExecutor.exists(SQL_CHECK_EXIST, ticket.getScheduleId(),
+//				ticket.getAccountId());
+//		if (isExistInvoice) {
+//			throw new RuntimeException("Invoice has exist");
+//		}
 
-    public List<Ticket> getTicketsByUserId(int userId) {
-        List<Ticket> tickets = new ArrayList<>();
-        String sql = "SELECT t.*, m.title FROM tickets t JOIN movies m ON t.movie_id = m.id WHERE t.user_id = ?";
+		long id = DatabaseExecutor.insert(SQL_CREATE, ticket.getAccountId(), ticket.getScheduleId(), ticket.getSeaId(),
+				ticket.getSeatCount(), ticket.getInvoiceId());
 
-        try (Connection conn = MyConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+		if (id > 0) {
+			return DatabaseExecutor.queryOne(SQL_QUERY_ONE, Ticket.class, id);
+		}
 
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
+		return null;
+	}
 
-            while (rs.next()) {
-                Ticket ticket = new Ticket();
-                ticket.setId(rs.getInt("id"));
-                ticket.setUserId(rs.getInt("user_id"));
-                ticket.setMovieId(rs.getInt("movie_id"));
-                ticket.setShowtime(rs.getString("showtime"));
-                ticket.setSeat(rs.getString("seat"));
-                ticket.setMovieTitle(rs.getString("title"));
-                tickets.add(ticket);
-            }
+	public static Ticket queryOne(int id) {
+		return DatabaseExecutor.queryOne(SQL_QUERY_ONE, Ticket.class, id);
+	}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	public static List<Ticket> queryListByAccountId(int accountId) {
+		return DatabaseExecutor.queryList(SQL_QUERY_LIST_BY_ACCOUNT_ID, Ticket.class, accountId);
+	}
 
-        return tickets;
-    }
-    
-    
-            public List<Ticket> getAllTickets() {
-           List<Ticket> tickets = new ArrayList<>();
-           String sql = "SELECT t.*, u.username, m.title AS movie_title " +
-                        "FROM tickets t " +
-                        "JOIN users u ON t.user_id = u.id " +
-                        "JOIN movies m ON t.movie_id = m.id";
+	public static List<Ticket> queryListByScheduleId(int scheduleId) {
+		return DatabaseExecutor.queryList(SQL_QUERY_LIST_BY_SCHEDULE_ID, Ticket.class, scheduleId);
+	}
 
-           try (Connection conn = MyConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
+	public static boolean deleteById(int id) {
+		return DatabaseExecutor.delete(SQL_DELETE_BY_ID, id) > 0;
+	}
 
-               while (rs.next()) {
-                   Ticket t = new Ticket(
-                       rs.getInt("id"),
-                       rs.getInt("user_id"),
-                       rs.getInt("movie_id"),
-                       rs.getString("showtime"),
-                       rs.getString("seat")
-                   );
+	public static boolean deleteByScheduleId(int scheduleId) {
+		return DatabaseExecutor.delete(SQL_DELETE_BY_SCHEDULE_ID, scheduleId) > 0;
+	}
 
-                   // Thêm thông tin user
-                   User user = new User();
-                   user.setId(rs.getInt("user_id"));
-                   user.setUsername(rs.getString("username"));
-                   t.setUser(user);
+	public static boolean deleteBySeatId(int seatId) {
+		return DatabaseExecutor.delete(SQL_DELETE_BY_SEAT_ID, seatId) > 0;
+	}
 
-                   // Thêm tiêu đề phim
-                   t.setMovieTitle(rs.getString("movie_title"));
+	public static void main(String[] args) {
+		try {
+//			 Create 
+//			Seat seat = SeatDao.create(new Seat(1, "A1", SeatEnum.Type.NORMAL));
+//			System.out.println("Created: " + seat);
 
-                   tickets.add(t);
-               }
+			// Get All Customers
+//			List<MovieGenre> genres = MovieGenreDao.queryList();
+//			System.out.println("All: " + genres);
 
-           } catch (SQLException e) {
-               e.printStackTrace();
-           }
+			// Update
+//			Map<String, Object> updateFields = new HashMap<>();
+//			updateFields.put("name1", "Updated Name");
+//			updateFields.put("description", "Updated Desc");
+//
+//			boolean updated = MovieGenreDao.update(2, updateFields);
+//			if (updated) {
+//				System.out.println("Update OK");
+//			} else {
+//				System.out.println("Update failed");
+//			}
 
-           return tickets;
-       }
-            
-            public boolean deleteTicketById(int id) {
-                String sql = "DELETE FROM tickets WHERE id = ?";
-                try (Connection conn = MyConnection.getConnection();
-                     PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setInt(1, id);
-                    return stmt.executeUpdate() > 0;    
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
+			// Delete
+//			boolean deleted = MovieGenreDao.delete(1);
+//			if (deleted) {
+//				System.out.println("Delete OK");
+//			} else {
+//				System.out.println("Delete failed");
+//			}
+
+		} catch (Exception e) {
+			System.err.println("UserDao Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }

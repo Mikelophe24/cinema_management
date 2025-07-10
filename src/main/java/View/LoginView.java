@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import Context.AppContext;
 import Dao.AccountDao;
 import Enum.AccountEnum;
 import Model.Account;
@@ -156,6 +157,7 @@ public class LoginView extends JFrame {
 
 			if (account != null) {
 				JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+				AppContext.curentAccount = account;
 				dispose();
 				System.out.println(account.getRole() + "Login Now!");
 				if (account.getRole() == AccountEnum.Role.ADMIN) {

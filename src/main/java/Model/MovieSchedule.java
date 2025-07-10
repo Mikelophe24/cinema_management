@@ -10,17 +10,20 @@ public class MovieSchedule {
 	private LocalDate showDate;
 	private LocalTime startTime;
 	private int duration;
+	private Double price;
 
 	public MovieSchedule() {
 	}
 
-	public MovieSchedule(int id, int theaterId, int movieId, LocalDate showDate, LocalTime startTime, int duration) {
+	public MovieSchedule(int id, int theaterId, int movieId, LocalDate showDate, LocalTime startTime, int duration,
+			Double price) {
 		this.id = id;
 		this.theaterId = theaterId;
 		this.movieId = movieId;
 		this.showDate = showDate;
 		this.startTime = startTime;
 		this.duration = duration;
+		this.price = price;
 	}
 
 	public int getId() {
@@ -71,10 +74,18 @@ public class MovieSchedule {
 		this.duration = duration;
 	}
 
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
 	@Override
 	public String toString() {
 		return "MovieSchedule [id=" + id + ", theaterId=" + theaterId + ", movieId=" + movieId + ", showDate="
-				+ showDate + ", startTime=" + startTime + ", duration=" + duration + "," + ", ticketPrice=" + "]";
+				+ showDate + ", startTime=" + startTime + ", duration=" + duration + ", price=" + price + "]";
 	}
 
 }

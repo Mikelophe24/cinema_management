@@ -2,87 +2,80 @@ package Model;
 
 public class Ticket {
 
-    private int id;
-    private int userId;
-    private int movieId;
-    private String showtime;
-    private String seat;
-    private String movieTitle;
-    private User user;
+	private int id;
+	private int accountId;
+	private int scheduleId;
+	private int seatCount;
+	private int invoiceId;
+	private int seaId;
 
-    // Constructor mặc định
-    public Ticket() {}
+	public Ticket() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    // Constructor để tạo vé khi đặt
-    public Ticket(int userId, int movieId, String showtime, String seat) {
-        this.userId = userId;
-        this.movieId = movieId;
-        this.showtime = showtime;
-        this.seat = seat;
-    }
+	public Ticket(int id, int accountId, int scheduleId, int seatCount, int invoiceId, int seatId) {
+		super();
+		this.id = id;
+		this.accountId = accountId;
+		this.scheduleId = scheduleId;
+		this.seatCount = seatCount;
+		this.invoiceId = invoiceId;
+		this.seaId = seatId;
+	}
 
-    // Constructor đầy đủ dùng khi load từ DB (có cả ID)
-    public Ticket(int id, int userId, int movieId, String showtime, String seat) {
-        this.id = id;
-        this.userId = userId;
-        this.movieId = movieId;
-        this.showtime = showtime;
-        this.seat = seat;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public int getAccountId() {
+		return accountId;
+	}
 
-    public int getUserId() {
-        return userId;
-    }
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+	public int getScheduleId() {
+		return scheduleId;
+	}
 
-    public int getMovieId() {
-        return movieId;
-    }
+	public void setScheduleId(int scheduleId) {
+		this.scheduleId = scheduleId;
+	}
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
-    }
+	public int getSeatCount() {
+		return seatCount;
+	}
 
-    public String getShowtime() {
-        return showtime;
-    }
+	public void setSeatCount(int seatCount) {
+		this.seatCount = seatCount;
+	}
 
-    public void setShowtime(String showtime) {
-        this.showtime = showtime;
-    }
+	public int getInvoiceId() {
+		return invoiceId;
+	}
 
-    public String getSeat() {
-        return seat;
-    }
+	public void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
+	}
 
-    public void setSeat(String seat) {
-        this.seat = seat;
-    }
+	public int getSeaId() {
+		return seaId;
+	}
 
-    public String getMovieTitle() {
-        return movieTitle;
-    }
+	public void setSeaId(int seaId) {
+		this.seaId = seaId;
+	}
 
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
-    }
+	@Override
+	public String toString() {
+		return "Ticket [id=" + id + ", accountId=" + accountId + ", scheduleId=" + scheduleId + ", seatCount="
+				+ seatCount + ", invoiceId=" + invoiceId + ", seaId=" + seaId + "]";
+	}
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
