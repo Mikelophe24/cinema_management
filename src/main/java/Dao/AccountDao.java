@@ -40,7 +40,6 @@ public class AccountDao {
 		if (isExist) {
 			throw new RuntimeException("Username has exist");
 		}
-
 //		AccountEnum.Role accountRole = AccountEnum.Role.CUSTOMER;
 //		if (AccountEnum.Role.isValidRole(role)) {
 //			accountRole = AccountEnum.Role.fromValue(role);

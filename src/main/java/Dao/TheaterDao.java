@@ -189,34 +189,6 @@ public class TheaterDao {
 
 	public static void main(String[] args) {
 		try {
-//			 Create 
-			Theater theater = TheaterDao.create(new Theater("P02", TheaterEnum.Status.ACTIVE, 65, 60, null, null));
-			System.out.println("Created: " + theater);
-
-			// Update
-//			Map<String, Object> updateFields = new HashMap<>();
-//			updateFields.put("name", "Updated Name");
-//			updateFields.put("description", "Updated Desc");
-//			updateFields.put("status", TheaterEnum.Status.CLOSED.getValue());
-//			updateFields.put("capacity", 164);
-//			updateFields.put("seat_count", 159);
-//
-//			boolean updated = TheaterDao.update(2, updateFields);
-//			if (updated) {
-//				System.out.println("Update OK");
-//			} else {
-//				System.out.println("Update failed");
-//			}
-
-			// Delete
-//			boolean deleted = TheaterDao.delete(2);
-//			if (deleted) {
-//				System.out.println("Delete OK");
-//			} else {
-//				System.out.println("Delete failed");
-//			}
-
-			// Get All Customers
 			List<TheaterWithSeats> theaterWithSeats = TheaterDao.queryList();
 			System.out.println("All: " + theaterWithSeats);
 

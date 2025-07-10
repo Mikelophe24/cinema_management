@@ -108,6 +108,10 @@ public abstract class BasePanel extends JPanel {
 		add(bottomPanel, BorderLayout.SOUTH);
 	}
 
+	protected void loadDataFromDatabase() {
+		// Mặc định: không làm gì cả
+	}
+
 	protected void setupListeners() {
 		if (buttonPanel != null) {
 			table.getSelectionModel().addListSelectionListener(e -> {

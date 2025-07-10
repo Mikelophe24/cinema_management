@@ -1,6 +1,13 @@
 package View.Admin.panels;
 
+import Dao.EmployeeDao;
+import Model.Employee;
+import View.Admin.common.*;
+
+import javax.swing.*;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
@@ -13,114 +20,168 @@ import View.Admin.common.SearchPanel;
 
 public class StaffPanel extends BasePanel {
 
-	public StaffPanel() {
-		super("Quản lý nhân viên", "👥");
-	}
+    public StaffPanel() {
+        super("Quản lý nhân viên", "👥");
+    }
 
-	@Override
-	protected void createComponents() {
-		// Tạo search panel
-		String[] fieldLabels = { "Họ tên", "SĐT" };
-		String[] comboLabels = { "Chức vụ" };
-		String[][] comboOptions = {
-				{ "Tất cả", "Quản lý", "Nhân viên bán hàng", "Nhân viên vệ sinh", "Bảo vệ", "Kỹ thuật viên" } };
+    @Override
+    protected void createComponents() {
+        // 🔸 Tạo SearchPanel (chỉ gồm Họ tên, SĐT)
+        String[] fieldLabels = {"Họ tên", "SĐT"};
+        searchPanel = new SearchPanel(fieldLabels);
 
-		searchPanel = new SearchPanel(fieldLabels, comboLabels, comboOptions);
+        // 🔸 Tạo bảng hiển thị
+        String[] columns = {"ID", "Họ tên", "SĐT", "Email", "Giới tính", "Ngày vào làm"};
+        table = createStyledTable(columns);
 
-		// Tạo table
-		String[] columns = { "ID", "Họ tên", "SĐT", "Email", "Chức vụ", "Trạng thái", "Ngày vào làm" };
-		table = createStyledTable(columns);
+        // 🔸 Tạo FormPanel (gồm 4 text fields + 1 combo box)
+        String[] formFieldLabels = {"Họ tên", "SĐT", "Email", "Ngày vào làm"};
+        String[] formComboLabels = {"Giới tính"};
+        String[][] formComboOptions = {{"Nam", "Nữ"}};
+        formPanel = new FormPanel("Thông tin nhân viên", formFieldLabels, formComboLabels, formComboOptions);
 
-		// Tạo form panel
-		String[] formFieldLabels = { "Họ tên", "SĐT", "Email", "Địa chỉ" };
-		String[] formComboLabels = { "Chức vụ" };
-		String[][] formComboOptions = {
-				{ "Quản lý", "Nhân viên bán hàng", "Nhân viên vệ sinh", "Bảo vệ", "Kỹ thuật viên" } };
+        // 🔸 Button panel
+        buttonPanel = new ButtonPanel(new String[]{});
+    }
 
-		formPanel = new FormPanel("Thông tin nhân viên", formFieldLabels, formComboLabels, formComboOptions);
+    @Override
+    protected void addSampleData() {
+        loadDataFromDatabase();
+    }
 
-		// Tạo button panel
-		buttonPanel = new ButtonPanel(new String[] {});
-	}
+    @Override
+    protected void displaySelectedRowData() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            formPanel.setTextFieldValue(0, table.getValueAt(selectedRow, 1).toString()); // Họ tên
+            formPanel.setTextFieldValue(1, table.getValueAt(selectedRow, 2).toString()); // SĐT
+            formPanel.setTextFieldValue(2, table.getValueAt(selectedRow, 3).toString()); // Email
+            formPanel.setTextFieldValue(3, table.getValueAt(selectedRow, 5).toString()); // Ngày vào làm
+            formPanel.setComboBoxValue(0, table.getValueAt(selectedRow, 4).toString()); // Giới tính
+        }
+    }
 
-	@Override
-	protected void addSampleData() {
-		Object[][] sampleData = {
-				{ 1, "Nguyễn Văn A", "0901234567", "nguyenvana@cinema.com", "Quản lý", "Đang làm việc", "2023-01-15" },
-				{ 2, "Trần Thị B", "0901234568", "tranthib@cinema.com", "Nhân viên bán hàng", "Đang làm việc",
-						"2023-02-20" },
-				{ 3, "Lê Văn C", "0901234569", "levanc@cinema.com", "Nhân viên vệ sinh", "Đang làm việc",
-						"2023-03-10" },
-				{ 4, "Phạm Thị D", "0901234570", "phamthid@cinema.com", "Bảo vệ", "Đang làm việc", "2023-04-05" },
-				{ 5, "Hoàng Văn E", "0901234571", "hoangvane@cinema.com", "Kỹ thuật viên", "Nghỉ việc", "2023-05-12" },
-				{ 6, "Vũ Thị F", "0901234572", "vuthif@cinema.com", "Nhân viên bán hàng", "Đang làm việc",
-						"2023-06-18" },
-				{ 7, "Đặng Văn G", "0901234573", "dangvang@cinema.com", "Quản lý", "Đang làm việc", "2023-07-25" },
-				{ 8, "Bùi Thị H", "0901234574", "buithih@cinema.com", "Nhân viên vệ sinh", "Đang làm việc",
-						"2023-08-30" },
-				{ 9, "Lý Văn I", "0901234575", "lyvani@cinema.com", "Bảo vệ", "Đang làm việc", "2023-09-14" },
-				{ 10, "Hồ Thị K", "0901234576", "hothik@cinema.com", "Kỹ thuật viên", "Đang làm việc", "2023-10-22" } };
+    @Override
+    protected void clearForm() {
+        formPanel.clearForm();
+    }
 
-		for (Object[] row : sampleData) {
-			tableModel.addRow(row);
-		}
-	}
+    @Override
+    protected Map<String, String> getFormData() {
+        Map<String, String> data = new HashMap<>();
+        data.put("fullName", formPanel.getTextFieldValue(0));
+        data.put("phone", formPanel.getTextFieldValue(1));
+        data.put("email", formPanel.getTextFieldValue(2));
+        data.put("hireDate", formPanel.getTextFieldValue(3));
+        data.put("gender", formPanel.getComboBoxValue(0));
+        return data;
+    }
 
-	@Override
-	protected void displaySelectedRowData() {
-		int selectedRow = table.getSelectedRow();
-		if (selectedRow != -1) {
-			formPanel.setTextFieldValue(0, table.getValueAt(selectedRow, 1).toString());
-			formPanel.setTextFieldValue(1, table.getValueAt(selectedRow, 2).toString());
-			formPanel.setTextFieldValue(2, table.getValueAt(selectedRow, 3).toString());
-			formPanel.setTextFieldValue(3, "Địa chỉ mẫu");
-			formPanel.setComboBoxValue(0, table.getValueAt(selectedRow, 4).toString());
-		}
-	}
+    @Override
+    protected void handleAdd() {
+        Map<String, String> data = getFormData();
+        try {
+            Employee emp = new Employee();
+            emp.setFullName(data.get("fullName"));
+            emp.setPhoneNumber(data.get("phone"));
+            emp.setEmail(data.get("email"));
+            emp.setGender("Nam".equals(data.get("gender")) ? 1 : 0);
+            emp.setHireDate(LocalDate.parse(data.get("hireDate"))); // ⚠ Yêu cầu định dạng yyyy-MM-dd
 
-	@Override
-	protected void clearForm() {
-		formPanel.clearForm();
-	}
+            boolean success = EmployeeDao.add(emp);
+            if (success) {
+                loadDataFromDatabase();
+                JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi thêm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	protected Map<String, String> getFormData() {
-		Map<String, String> data = new HashMap<>();
-		data.put("fullName", formPanel.getTextFieldValue(0));
-		data.put("phone", formPanel.getTextFieldValue(1));
-		data.put("email", formPanel.getTextFieldValue(2));
-		data.put("address", formPanel.getTextFieldValue(3));
-		data.put("position", formPanel.getComboBoxValue(0));
-		return data;
-	}
+    @Override
+    protected void handleEdit(int selectedRow) {
+        int employeeId = (int) table.getValueAt(selectedRow, 0);
+        Map<String, String> data = getFormData();
 
-	@Override
-	protected void handleEdit(int selectedRow) {
-		System.out.println("Sửa nhân viên ở hàng: " + selectedRow);
-		System.out.println("Dữ liệu form: " + getFormData());
-	}
+        try {
+            Map<String, Object> updateFields = new HashMap<>();
+            updateFields.put("full_name", data.get("fullName"));
+            updateFields.put("phone_number", data.get("phone"));
+            updateFields.put("email", data.get("email"));
+            updateFields.put("gender", "Nam".equals(data.get("gender")) ? 1 : 0);
+            updateFields.put("hire_date", LocalDate.parse(data.get("hireDate")));
 
-	@Override
-	protected void handleAdd() {
-		System.out.println("Thêm nhân viên mới");
-		System.out.println("Dữ liệu form: " + getFormData());
-	}
+            boolean success = EmployeeDao.update(employeeId, updateFields);
+            if (success) {
+                loadDataFromDatabase();
+                JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	protected void handleSearch() {
-		JTextField[] searchFields = searchPanel.getSearchFields();
-		JComboBox<String>[] searchCombos = searchPanel.getSearchCombos();
+    @Override
+    protected void loadDataFromDatabase() {
+        tableModel.setRowCount(0);
+        for (Employee emp : EmployeeDao.queryList()) {
+            Object[] row = {
+                    emp.getId(),
+                    emp.getFullName(),
+                    emp.getPhoneNumber(),
+                    emp.getEmail(),
+                    emp.getGender() == 1 ? "Nam" : "Nữ",
+                    emp.getHireDate() != null ? emp.getHireDate().toString() : ""
+            };
+            tableModel.addRow(row);
+        }
+    }
 
-		String fullName = searchFields[0].getText().trim();
-		String phone = searchFields[1].getText().trim();
-		String position = searchCombos[0].getSelectedItem().toString();
+    @Override
+    protected void handleSearch() {
+        JTextField[] searchFields = searchPanel.getSearchFields();
+        String fullName = searchFields[0].getText().trim();
+        String phone = searchFields[1].getText().trim();
 
-		System.out.println("Tìm kiếm: " + fullName + ", " + phone + ", " + position);
-	}
+        // Gọi DAO
+        List<Employee> results = EmployeeDao.search(fullName, phone);
 
-	@Override
-	protected void handleDelete(int selectedRow) {
-		// TODO Auto-generated method stub
+        // Cập nhật bảng
+        tableModel.setRowCount(0);
+        for (Employee emp : results) {
+            Object[] row = {
+                    emp.getId(),
+                    emp.getFullName(),
+                    emp.getPhoneNumber(),
+                    emp.getEmail(),
+                    emp.getGender() == 1 ? "Nam" : "Nữ",
+                    emp.getHireDate() != null ? emp.getHireDate().toString() : ""
+            };
+            tableModel.addRow(row);
+        }
+    }
 
-	}
+
+    @Override
+    protected void handleDelete(int selectedRow) {
+        int employeeId = (int) table.getValueAt(selectedRow, 0);
+        try {
+            boolean success = EmployeeDao.delete(employeeId);
+            if (success) {
+                tableModel.removeRow(selectedRow);
+                JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Không thể xóa nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi xóa: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 }
