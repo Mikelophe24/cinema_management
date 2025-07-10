@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.*;
 
 public class CustomerDao {
@@ -56,6 +57,22 @@ public class CustomerDao {
     public static List<Customer> queryList() {
         return DatabaseExecutor.queryList(SQL_QUERY_LIST, Customer.class);
     }
+
+    // Thêm nhanh khách hàng bằng tham số đơn giản
+    public static Customer add(int accountId, String fullName, String email, String phoneNumber,
+                               String address, LocalDate birthday, int gender) {
+        Customer customer = new Customer();
+        customer.setAccountId(accountId);
+        customer.setFullName(fullName);
+        customer.setEmail(email);
+        customer.setPhoneNumber(phoneNumber);
+        customer.setAddress(address);
+        customer.setBirthday(birthday);
+        customer.setGender(gender);
+
+        return create(customer); // dùng lại hàm create
+    }
+
 
 
     // Cập nhật theo ID và Map fields
